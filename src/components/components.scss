@@ -1,0 +1,123 @@
+// Dependencies: variables.scss
+@import "../../../styles/Variables.scss";
+
+.button-secondary {
+  background-color: $secondary-color;
+  color: $secondary-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-secondary:hover {
+  background-color: $secondary-hover-color;
+}
+.button-success {
+  background-color: $success-color;
+  color: $success-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-success:hover {
+  background-color: $success-hover-color;
+}
+.button-info {
+  background-color: $info-color;
+  color: $info-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-info:hover {
+  background-color: $info-hover-color;
+}
+.button-warning {
+  background-color: $warning-color;
+  color: $warning-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-warning:hover {
+  background-color: $warning-hover-color;
+}
+.button-danger {
+  background-color: $danger-color;
+  color: $danger-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-danger:hover {
+  background-color: $danger-hover-color;
+}
+.button-light {
+  background-color: $light-color;
+  color: $light-text-color;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-light:hover {
+  background-color: $light-hover-color;
+}
+.button-dark {
+  background-color: $dark-color;
+  color: $dark-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-dark:hover {
+  background-color: $dark-hover-color;
+}
+.button-white {
+  background-color: $white-color;
+  color: $white-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-white:hover {
+  background-color: $white-hover-color;
+}
+.button-black {
+  background-color: $black-color;
+  color: $black-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-black:hover {
+  background-color: $black-hover-color;
+}
+.button-gray {
+  background-color: $gray-color;
+  color: $gray-text-color;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.button-gray:hover {
+  background-color: $gray-hover-color;
+}

@@ -1,0 +1,51 @@
+.feedbackModal {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  button {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: white;
+  }
+
+  &.success {
+    h2 {
+      color: #4caf50;
+    }
+
+    button {
+      background-color: #4caf50;
+
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  }
+
+  &.error {
+    h2 {
+      color: #f44336;
+    }
+
+    button {
+      background-color: #f44336;
+
+      &:hover {
+        background-color: #d32f2f;
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+export { CarouselMainWalletFull } from "./CarouselMainWithWalletFull";

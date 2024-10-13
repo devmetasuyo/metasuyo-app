@@ -1,0 +1,120 @@
+/* Estilos para el navbar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(1, 1, 1, 0.85);
+  padding: 10px 20px;
+  max-width: 2060px;
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 2em;
+  background: none;
+  border: none;
+}
+
+.menu {
+  align-items: center;
+  list-style: none;
+  display: flex;
+  gap: 1em;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #fff;
+  border-bottom: 2px solid transparent;
+}
+
+.menu li a:hover {
+  color: #f8f9fa;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+/* Estilos para el menú responsive */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .menu {
+    display: flex;
+    transform: translateX(-350%);
+    flex-direction: column;
+    position: absolute;
+    top: -16px;
+    left: 0;
+    width: 185px;
+    height: 100vh;
+    background: #fff;
+    padding: 2em;
+    gap: 1em;
+    z-index: 999;
+  }
+
+  .menu li a {
+    text-decoration: none;
+    color: #000;
+    border-bottom: 2px solid transparent;
+  }
+
+  .menu li a:hover {
+    color: #000;
+    border-bottom: 2px solid #000;
+  }
+
+  .menu::before {
+    content: "";
+    width: 240%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    position: fixed;
+    left: 100%;
+    top: 0;
+    z-index: -1;
+    transition: background 0.5s ease;
+  }
+
+  .menu.open::before {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .menu.open {
+    animation: slideInH 0.8s ease-in-out forwards;
+  }
+
+  .menu.close {
+    animation: slideOutH 0.8s ease-in-out forwards;
+  }
+
+  @keyframes slideInH {
+    0% {
+      transform: translateX(-350%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutH {
+    0% {
+      top: -26px;
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-350%);
+    }
+  }
+}

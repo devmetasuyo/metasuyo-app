@@ -1,0 +1,56 @@
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-align: left;
+  position: absolute;
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-font-feature-settings: "liga", "kern";
+  -moz-font-feature-settings: "liga", "kern";
+  -ms-font-feature-settings: "liga", "kern";
+  font-feature-settings: "liga", "kern";
+  -webkit-font-variant-ligatures: common-ligatures;
+  font-variant-ligatures: common-ligatures;
+  -webkit-font-variant-numeric: proportional-nums;
+  font-variant-numeric: proportional-nums;
+  -webkit-font-variant-east-asian: normal;
+  font-variant-east-asian: normal;
+  -webkit-font-variant-caps: normal;
+  font-variant-caps: normal;
+  -webkit-font-variant-alternates: normal;
+  font-variant-alternates: normal;
+  -webkit-font-variant-position: normal;
+  font-variant-position: normal;
+  -webkit-font-variant-variant: normal;
+  -webkit-font-variant-ligatures: normal;
+  font-variant-ligatures: normal;
+  -webkit-font-variant-caps: normal;
+  font-variant-caps: normal;
+  -webkit-font-variant-numeric: normal;
+  font-variant-numeric: normal;
+  -webkit-font-variant-east-asian: normal;
+  font-variant-east-asian: normal;
+  -webkit-font-variant-alternates: normal;
+  font-variant-alternates: normal;
+}
+html {
+  background: #000;
+}

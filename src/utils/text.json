@@ -1,0 +1,30 @@
+{
+  "common": {
+    "banner": "Ficcion, Cultura e Impacto"
+  },
+  "landing": {
+    "banner": {
+      "title": "Inicia tu aventura y explora los mundos de",
+      "subTitle": "Ficcion, Cultura e Impacto"
+    },
+    "text_1": "Forja tu camino al explorar Metasuyo con nuestras coleccionables. Descubre beneficios y novedades solo para ti.",
+    "title": "Kamasun Pacha & Futurismo Incaico"
+  },
+  "perfil": {
+    "misNfts": {
+      "title": "NFTs en tu perfil",
+      "grid": "No posee nfts en su colección"
+    }
+  },
+  "footer": {
+    "title": "Acerca de nosotros",
+    "span": "Creamos historias de ficción inspiradas en culturas ancestrales, y las vinculamos a productos y experiencias digitales y físicas con impacto social y ambiental.",
+    "copyright": "Copyright Metasuyo ©"
+  },
+  "modals": {
+    "mintNft": {
+      "title": "FELICITACIONES!",
+      "sub-title": "Has Obtenido tu coleccionable"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+@import "../../../styles/Variables.scss";
+
+.titleSlider {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #f5a602;
+  margin-bottom: 5px;
+}
+
+.imgSlider {
+  width: 97%;
+  height: 200px;
+  object-fit: cover;
+  margin-top: 5px;
+  border-radius: 10px;
+}
+
+.metasuyoSlider {
+  width: 80% !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  border-radius: 10px;
+  border: #f5a602 3px solid;
+}
+
+.eyeButton {
+  display: flex;
+  margin-left: auto;
+  margin-right: 10px;
+  margin-top: 6px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: #fff 2px solid;
+  background-color: $light-color;
+  color: $light-text-color;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $light-hover-color;
+  }
+}
