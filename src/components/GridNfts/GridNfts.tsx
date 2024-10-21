@@ -47,7 +47,7 @@ export const GridNfts = () => {
             inset: 0,
           }}
         >
-          {textos.perfil.misNfts.grid}
+          {textos.profile.my_nfts}
         </p>
       )}
     </div>

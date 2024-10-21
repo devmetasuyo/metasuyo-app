@@ -2,6 +2,9 @@
   "name": "metasuyo-version-wagmi",
   "private": true,
   "version": "0.0.0",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -13,6 +16,7 @@
     "@coinbase/onchainkit": "^0.33.5",
     "@ensdomains/ensjs": "^4.0.1-alpha.0",
     "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "5.21.1",
     "@rainbow-me/rainbowkit": "^2.1.7",
     "@tanstack/react-query": "5.45.1",
     "axios": "^1.7.7",
@@ -20,15 +24,19 @@
     "install": "^0.13.0",
     "keen-slider": "^6.8.6",
     "next": "14.2.4",
+    "prisma": "^5.21.1",
     "react": "^18.3.1",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "react-icons": "^5.3.0",
+    "recharts": "^2.13.0",
     "sass": "^1.79.4",
     "sharp": "^0.33.5",
+    "uuid": "^10.0.0",
     "viem": "latest",
     "wagmi": "latest",
+    "web3": "^4.13.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -38,6 +46,7 @@
     "@types/react": "^18.3.1",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.2",
     "@wagmi/cli": "latest",
     "bufferutil": "^4.0.8",

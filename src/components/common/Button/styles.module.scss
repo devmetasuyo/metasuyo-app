@@ -1,4 +1,4 @@
-@import "../../../styles/Variables.scss";
+@import "../../../styles/variables.scss";
 
 .button {
   padding: 10px 20px;
@@ -30,6 +30,11 @@
         background-color: lighten($primary-color, 30%);
       }
     }
+  }
+
+  &-lg {
+    padding: 12px 24px; // Ajusta el tamaño según sea necesario
+    z-index: 1;
   }
 
   &:disabled {

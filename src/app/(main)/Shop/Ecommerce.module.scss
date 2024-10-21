@@ -1,0 +1,32 @@
+@import "../../../styles/variables.scss";
+
+.container {
+  max-width: 1280px;
+  padding: 0 calc(var(--spacingUnit) * 2);
+  flex-direction: column;
+}
+
+.nftGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 225px));
+  gap: var(--spacingUnit);
+  align-content: center;
+  margin: auto auto;
+  min-height: 706px; // Establecer una altura mínima para mostrar al menos 2 filas
+}
+
+// Media queries para hacer el contenedor más responsive
+@media (max-width: 768px) {
+  .nftGrid {
+    min-height: 500px; // Ajustar la altura mínima en pantallas más pequeñas
+  }
+}
+
+@media (max-width: 480px) {
+  .nftGrid {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(200px, 225px)
+    ); // Ajustar el tamaño de las columnas en pantallas muy pequeñas
+  }
+}

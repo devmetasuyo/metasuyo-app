@@ -1,20 +1,32 @@
 {
   "common": {
-    "banner": "Ficcion, Cultura e Impacto"
+    "banner": "Bienvenido a MetaSuyo"
   },
   "landing": {
     "banner": {
-      "title": "Inicia tu aventura y explora los mundos de",
-      "subTitle": "Ficcion, Cultura e Impacto"
+      "title": "Explora el mundo de los NFTs",
+      "subTitle": "Colecciona, crea y comparte tus NFTs"
     },
-    "text_1": "Forja tu camino al explorar Metasuyo con nuestras coleccionables. Descubre beneficios y novedades solo para ti.",
-    "title": "Kamasun Pacha & Futurismo Incaico"
+    "text_1": "Únete a nuestra comunidad y descubre una nueva forma de arte digital.",
+    "title": "Descubre nuestras colecciones"
   },
-  "perfil": {
-    "misNfts": {
-      "title": "NFTs en tu perfil",
-      "grid": "No posee nfts en su colección"
+  "ecommerce": {
+    "banner": {
+      "title": "Colección de NFTs",
+      "subTitle": "Explora y compra NFTs únicos"
     }
+  },
+  "dashboard": {
+    "banner": "Panel de Control",
+    "create_nft": "Crea tu NFT"
+  },
+  "profile": {
+    "banner": "Perfil de usuario",
+    "my_nfts": "Mis NFTS"
+  },
+  "article": {
+    "title": "Detalles del NFT",
+    "collections": "Colecciones"
   },
   "footer": {
     "title": "Acerca de nosotros",

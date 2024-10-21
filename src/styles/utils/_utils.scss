@@ -1,0 +1,11 @@
+
+@function generate-theme-colors($colors, $suffix: "-color") {
+    $output: "";
+  
+    @each $color-name, $color-value in $colors {
+      $new-name: "--#{$color-name}#{$suffix}";
+      $output: #{$new-name}: #{$color-value};
+    }
+  
+  
+}

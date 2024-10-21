@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model clientes {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @db.VarChar(100)
+  correo    String     @db.VarChar(100)
+  telefono  String?    @db.VarChar(15)
+  direccion String?
+  wallet    String?    @db.VarChar
+  facturas  facturas[]
+}
+
+model productos_en_factura {
+  id             Int        @id @default(autoincrement())
+  factura_id     String?
+  creado_el      DateTime   @default(now())
+  actualizado_el DateTime   @default(now())
+  producto_id    Int
+  cantidad       Int
+  sub_total      Decimal    @db.Decimal(10, 2)
+  facturas       facturas?  @relation(fields: [factura_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  productos      productos? @relation(fields: [producto_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model facturas {
+  id         String                 @id @default(uuid())
+  cliente_id Int?
+  hash       String                 @default("N/A")
+  fecha      DateTime?              @default(now()) @db.Timestamp(6)
+  total      Decimal                @db.Decimal(10, 2)
+  estado     String
+  productos  productos_en_factura[]
+  clientes   clientes?              @relation(fields: [cliente_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model productos {
+  id                   Int                    @id @default(autoincrement())
+  nombre               String                 @db.VarChar(100)
+  categoria            String                 @db.VarChar(100)
+  precio               Decimal                @db.Decimal(10, 2)
+  image                String                 @default("/icon.png") @db.Text()
+  descripcion          String                 @db.Text()
+  creado_el            DateTime               @default(now())
+  actualizado_el       DateTime               @default(now())
+  productos_en_factura productos_en_factura[]
+}
