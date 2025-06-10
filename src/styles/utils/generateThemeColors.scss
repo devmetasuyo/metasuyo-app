@@ -1,0 +1,10 @@
+@function generateThemeColors($colors, $suffix: "Color") {
+  $theme-colors: ();
+
+  @each $color-name, $color-value in $colors {
+    $new-name: #{$color-name}#{$suffix};
+    $theme-colors: map-merge($theme-colors, (#{$new-name}: $color-value));
+  }
+
+  @return $theme-colors;
+}

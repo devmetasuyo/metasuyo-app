@@ -1,0 +1,19 @@
+.filterButton {
+  background-color: #007bff; // Color del botón
+  color: white; // Color del texto
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .icon {
+    margin-right: 5px; // Espaciado entre el ícono y el texto
+  }
+
+  &:hover {
+    background-color: #0056b3; // Color al pasar el mouse
+  }
+}

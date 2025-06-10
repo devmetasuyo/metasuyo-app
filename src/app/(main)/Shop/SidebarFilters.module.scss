@@ -1,0 +1,39 @@
+@import "../../../styles/variables.scss";
+
+.sidebar {
+  background-color: rgba($light-color, 0.4); // Usar color de la variable
+  padding: 0 20px; // Aumentar el padding
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); // Sombra más pronunciada
+  width: 250px; // Aumentar el ancho
+  margin: 0 10px; // Espaciado alrededor del sidebar
+
+  @media (max-width: 768px) {
+    display: none; // Ocultar en pantallas pequeñas
+  }
+}
+
+.filterGroup {
+  margin-bottom: 15px;
+
+  label {
+    font-weight: 600; // Hacer la etiqueta más destacada
+    color: $primary-color; // Usar color primario
+  }
+
+  select {
+    width: 100%; // Hacer que el select ocupe todo el ancho
+    padding: 8px; // Ajustar el espaciado interno
+    border-radius: 4px; // Bordes redondeados
+    border: 1px solid $gray-color; // Borde
+    background-color: white; // Color de fondo
+    font-size: 0.9rem; // Tamaño de fuente más pequeño
+    margin-top: 5px; // Espaciado superior
+  }
+}
+
+.filterTitle {
+  margin-bottom: 10px;
+  font-weight: bold; // Hacer el título más destacado
+  color: $primary-color; // Usar color primario
+}
