@@ -4,9 +4,9 @@ import { Banner, Degradado, Title } from "@/components";
 import StatsCard from "./StatsCard";
 import textos from "@/utils/text.json";
 import { useEffect, useState } from "react";
-import styles from "./AdminNft.module.scss"; // Asegúrate de crear este archivo de estilos
+import styles from "./AdminNft.module.css"; // Asegúrate de crear este archivo de estilos
 import NftItem from "./NftItem"; // Asegúrate de importar el nuevo componente
-import { Card, CardContent, CardHeader } from "@/components/Common/Card"; // Importa el componente Card correctamente
+import { Card, CardContent, CardHeader } from "@/components/common/Card"; // Importa el componente Card correctamente
 
 const mockNfts = [
   {
