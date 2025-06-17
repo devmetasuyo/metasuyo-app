@@ -1,13 +1,8 @@
 import "./globals.scss";
-
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
-import { getCookieState } from "@/utils/getCookieState";
-import { FeedbackModal } from "@/components/Modals/FeedbackModal";
-
-import Providers from "@/components/providers";
+import ClientLayout from "@/components/clientlayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,14 +24,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout(props: { children: ReactNode }) {
-  const initialState = getCookieState();
   return (
     <html lang="es">
       <body className={inter.className}>
-        <Providers initialState={initialState}>
+        <ClientLayout>
           {props.children}
-          <FeedbackModal />
-        </Providers>
+        </ClientLayout>
       </body>
     </html>
   );

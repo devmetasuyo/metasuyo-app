@@ -1,24 +1,18 @@
 "use client";
 
 import {
-  Transaction,
-  TransactionButton,
-} from "@coinbase/onchainkit/transaction";
-import type { LifecycleStatus } from "@coinbase/onchainkit/transaction";
-import {
   stringToHex,
-  type Address,
-  type ContractFunctionParameters,
+  encodeFunctionData,
 } from "viem";
 import { MetasuyoAbi } from "@/abis/MetasuyoAbi";
-import { useCallback, useEffect, useState } from "react";
-import styles from "./styles.module.scss";
+import { useCallback, useState } from "react";
 import { Modal } from "../common";
 import { NftMintCard } from "../Cards";
-import { useAccount } from "wagmi";
+import { usePrivySession } from "@/hooks/usePrivySession";
+import { usePrivy } from "@privy-io/react-auth";
+import { createPublicClient, http } from "viem";
+import { privyConfig } from "@/privy";
 
-const NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT =
-  process.env.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT;
 
 export function TransactionWrapper({
   address,
@@ -27,7 +21,7 @@ export function TransactionWrapper({
   nftData,
   onSuccess,
 }: {
-  address: Address;
+  address: string;
   idNtf: number;
   uid: string;
   nftData: {
@@ -37,55 +31,66 @@ export function TransactionWrapper({
   };
   onSuccess: () => void;
 }) {
-  const { chainId, isConnecting } = useAccount();
-  const { imageUri, name, rarity } = nftData;
+  const { user, loading } = usePrivySession();
+  const { sendTransaction } = usePrivy();
   const [modalOpen, setModalOpen] = useState(false);
-  const [bytes32Uid, setBytes32Uid] = useState("");
+  const [txLoading, setTxLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const contracts = [
-    {
-      address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-      abi: MetasuyoAbi,
-      functionName: "clone_nft",
-      args: [idNtf, bytes32Uid],
-    },
-  ] as unknown as ContractFunctionParameters[];
-
-  useEffect(() => {
-    setBytes32Uid(stringToHex(uid, { size: 32 }));
-  }, [uid]);
-
-  const handleSuccess = useCallback(
-    (state: LifecycleStatus) => {
-      onSuccess();
-      if (state.statusName === "success") {
-        setModalOpen(true);
+  const { imageUri, name, rarity } = nftData;
+  const handleClaim = useCallback(async () => {
+    setTxLoading(true);
+    setError(null);
+    try {
+      if (!sendTransaction || !user?.wallet?.address) {
+        setError("No se encontró la billetera de Privy.");
+        setTxLoading(false);
+        return;
       }
-    },
-    [onSuccess]
-  );
 
-  if (isConnecting) {
-    return <span>Loading...</span>;
-  }
+      // Prepara los datos de la transacción
+      const data = encodeFunctionData({
+        abi: MetasuyoAbi,
+        functionName: "clone_nft",
+        args: [BigInt(idNtf), stringToHex(uid, { size: 32 })],
+      });
+
+      const tx = {
+        to: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        data,
+      };
+
+      // Envía la transacción usando el método actualizado de Privy
+      const { transactionHash } = await sendTransaction(tx);
+
+      // Espera el receipt usando viem
+      const publicClient = createPublicClient({
+        chain: privyConfig.defaultChain as any, 
+        transport: http(),
+      });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+
+      setModalOpen(true);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message || "Error al reclamar el NFT");
+    } finally {
+      setTxLoading(false);
+    }
+  }, [sendTransaction, user, idNtf, uid, onSuccess]);
+
+  if (loading) return <span>Loading...</span>;
 
   return (
     <>
-      <Transaction
-        capabilities={{
-          paymasterService: {
-            url: NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT as string,
-          },
-        }}
-        chainId={chainId}
-        contracts={contracts}
-        onStatus={handleSuccess}
+      <button
+        className="btn"
+        onClick={handleClaim}
+        disabled={txLoading}
       >
-        <TransactionButton
-          className={styles.ghostButton}
-          text="Reclamar"
-        ></TransactionButton>
-      </Transaction>
+        {txLoading ? "Reclamando..." : "Reclamar"}
+      </button>
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <Modal isOpen={modalOpen} handleModal={() => setModalOpen(false)}>
         <NftMintCard
           onClose={() => setModalOpen(false)}

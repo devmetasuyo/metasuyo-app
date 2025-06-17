@@ -1,3 +1,4 @@
+"use client";
 import textos from "@/utils/text.json";
 import {
   FaFacebookF,

@@ -4,7 +4,6 @@ import {
   setTokenCookie,
   verifyToken,
 } from "@/utils/auth";
-import { getCookieState } from "@/utils/getCookieState";
 import { prisma } from "@/utils/prismaClient";
 import { cookies } from "next/headers";
 
@@ -20,6 +19,7 @@ export const GET = async () => {
 
     const payload = await verifyToken(token);
 
+    
     if (!payload) throw new Error("Payload not found");
 
     const user = await prisma.clientes.findFirst({

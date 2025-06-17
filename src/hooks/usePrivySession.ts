@@ -6,7 +6,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { UserSession } from "@/components/types/user";
 
 export function usePrivySession() {
-  const { authenticated, user, login: privyLogin, logout: privyLogout} = usePrivy();
+  const { authenticated, user, login: privyLogin, logout: privyLogout, sendTransaction:sendTransaction} = usePrivy();
   const [session, setSession] = useState<UserSession | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,5 +58,6 @@ export function usePrivySession() {
     logout,
     authenticated,
     user,
+    sendTransaction
   };
 }
