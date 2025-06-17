@@ -28,7 +28,7 @@ export function CardNftAdmin({ id }: { id: number }) {
                 <NFTDetails
                   data={{ ...data }}
                   onSubmit={(data) => {
-                    console.log(data);
+                    //TODO REVISAR
                   }}
                 />
                 <NFTOwnershipActions id={id} data={{ ...data }} />

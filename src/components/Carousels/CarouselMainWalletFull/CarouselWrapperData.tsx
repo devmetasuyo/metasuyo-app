@@ -6,7 +6,7 @@ import { PropsWithChildren } from "react";
 import Image from "next/image";
 
 import styles from "./CarouselWrapperData.module.scss";
-import { Spinner, Title } from "@/components/Common";
+import { Spinner, Title } from "@/components/common";
 
 interface CarouselWrapperDataProps extends PropsWithChildren {
   collectionId: number;

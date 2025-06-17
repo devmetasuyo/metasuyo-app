@@ -3,7 +3,7 @@
 import { CarouselContainer } from "../Carousel/CarouselContainer";
 import { useGetCollectionNames } from "@/hooks/useGetCollectionNames";
 import { CarouselNftList } from "./CarouselNftList";
-import { Spinner } from "@/components/Common";
+import { Spinner } from "@/components/common";
 
 export const CarouselMainWallet = () => {
   const contractAddress = process.env

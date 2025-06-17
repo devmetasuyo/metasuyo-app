@@ -1,10 +1,11 @@
 @import "../../../styles/variables.scss";
 
 .card {
+  color: $primary-text-color;
   display: inline-block;
-  border-radius: 10px;
+  border-radius: calc(var(--spacing-unit) * 2);
   box-shadow: 0 0 10px #f5a4023d;
-  border: solid 3px #f5a602;
+  border: solid 3px $primary-color;
   overflow: hidden;
   transition: box-shadow 0.3s;
   position: relative;
@@ -13,7 +14,6 @@
     background-color: white;
   }
 
-  // Clases para los colores de fondo
   &-primary {
     background-color: $primary-bg-color;
   }
@@ -50,7 +50,7 @@
 .cardContent {
   display: flex;
   flex-direction: column;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
 }
 
 .cardHeader {
@@ -76,12 +76,12 @@
   position: relative;
   border: rgb(245, 166, 2) solid 2px;
   margin: 10px;
-  border-radius: 10px;
+  border-radius: var(--spacing-unit);
 
   img {
     display: flex;
     margin: auto;
     width: 200px;
-    border-radius: 10px;
+    border-radius: var(--spacing-unit);
   }
 }

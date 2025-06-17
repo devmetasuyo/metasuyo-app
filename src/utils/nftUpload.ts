@@ -25,8 +25,6 @@ export async function uploadImageToPinata(
 
   const data = await response.data.IpfsHash;
 
-  console.log(data);
-
   return data;
 }
 
@@ -37,8 +35,6 @@ export async function uploadMetadataToPinata(
   rarity: number,
   collectionId: number
 ): Promise<string> {
-  console.log(title, description, imageHash, rarity, collectionId);
-
   const response = await axios.post(
     "https://api.pinata.cloud/pinning/pinJSONToIPFS",
     {

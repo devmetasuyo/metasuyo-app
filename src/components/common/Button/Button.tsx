@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import styles from "./styles.module.scss";
 import clsx from "clsx";
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   color?: "primary" | "secondary" | "success" | "info" | "warning" | "danger";
   children: React.ReactNode;

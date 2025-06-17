@@ -1,9 +1,7 @@
-@import "../../../styles/variables.scss";
-
 .titleSlider {
   font-size: 1rem;
   font-weight: bold;
-  color: #f5a602;
+  color: var(--primary-color);
   margin-bottom: 5px;
 }
 
@@ -16,7 +14,8 @@
 }
 
 .metasuyoSlider {
-  width: 80% !important;
+  min-width: 200px;
+  max-width: 200px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -24,27 +23,25 @@
   justify-content: center;
   background: black;
   border-radius: 10px;
-  border: #f5a602 3px solid;
+  border: var(--primary-color) 3px solid;
 }
 
 .eyeButton {
-  display: flex;
+  background-color: var(--light-color);
   margin-left: auto;
-  margin-right: 10px;
-  margin-top: 6px;
+  right: 0.625rem;
+  top: 0.375rem;
   position: absolute;
-  top: 0;
-  right: 0;
-  border: #fff 2px solid;
-  background-color: $light-color;
-  color: $light-text-color;
-  padding: 5px 10px;
-  border-radius: 5px;
+  width: 3rem;
+  height: 3rem;
+  color: var(--light-text-color);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: $light-hover-color;
+    background-color: var(--light-hover-color);
   }
 }

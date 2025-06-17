@@ -1,0 +1,16 @@
+{
+    "css.styleSheets": [
+        "src/**/*.css",
+        "src/**/*.scss",
+        "src/**/*.sass",
+        "src/**/*.less",
+        "src/**/*.styl",
+        "src/**/*.pcss",
+        "src/**/*.postcss",
+        "src/**/*.svelte",
+        "src/**/*.vue",
+        "src/**/*.jsx",
+        "src/**/*.tsx",
+        "src/**/*.ts",
+    ],
+}

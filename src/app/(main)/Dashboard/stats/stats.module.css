@@ -1,0 +1,122 @@
+.container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background-color: var(--dark-color);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.statCard h3 {
+  color: var(--white-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.statNumbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.statLabel {
+  display: block;
+  color: var(--gray-color);
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  display: block;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.chartSection {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+
+.chartCard {
+  background-color: var(--dark-color);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chartCard h3 {
+  color: var(--white-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.chartContainer {
+  height: 300px;
+  position: relative;
+}
+
+.topProducts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topProduct {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+}
+
+.productRank {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.productId {
+  color: var(--white-color);
+  font-size: 0.9rem;
+  font-family: monospace;
+}
+
+.productSales {
+  color: var(--gray-color);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 968px) {
+  .chartSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .chartContainer {
+    height: 250px;
+  }
+} 

@@ -1,6 +1,7 @@
 @import "../../../styles/variables.scss";
 
 .nftItem {
+  width: 100%;
   position: relative;
   border: 1px solid $gray-color;
   border-radius: 8px;
@@ -11,7 +12,6 @@
     background-color 0.2s;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   max-height: 350px;
-
   background-color: rgba($gray-color, 0.4);
 
   &:hover {
@@ -23,24 +23,24 @@
 .nftImage {
   width: 100%;
   max-height: 150px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 4px;
 }
 
 .nftName {
   font-weight: bold;
-  color: $dark-text-color; // Asegurarse de que el color sea legible
-  font-size: 1rem; // Tamaño de fuente
-  margin: 10px 0; // Espaciado superior e inferior
+  color: $dark-text-color;
+  font-size: 1rem;
+  margin: 10px 0;
   text-align: left;
 }
 
 .nftPrice {
-  font-size: 0.9rem; // Tamaño de fuente
-  color: $primary-color; // Color de la moneda
-  margin: 10px 0; // Espaciado superior e inferior
-  display: flex; // Usar flex para alinear el icono
-  align-items: center; // Alinear verticalmente
+  font-size: 0.9rem;
+  color: $primary-color;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
 }
 
 .duplicateTag {

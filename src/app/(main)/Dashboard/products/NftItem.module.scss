@@ -1,0 +1,76 @@
+$rarity-colors: (
+  1: #808080,
+  2: #ffffff,
+  3: #0000ff,
+  4: #ffd700,
+  5: #702670,
+);
+
+@mixin rarity-gradient($color) {
+  background: linear-gradient(135deg, rgba($color, 0.13), rgba($color, 0.27));
+}
+
+.nftCard {
+  color: white !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.nftInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rank {
+  color: #718096;
+  width: 1.5rem;
+}
+
+.nftImage {
+  border-radius: 0.25rem;
+}
+
+.nftName {
+  font-size: clamp(0.825rem, 4vw, 1rem);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.rarityTag {
+  font-size: clamp(0.575rem, 3vw, 0.75rem);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.priceInfo {
+  text-align: right;
+}
+
+.price {
+  font-size: clamp(0.825rem, 4vw, 1rem);
+  font-weight: 600;
+}
+
+.ethPrice {
+  font-size: clamp(0.6rem, 3.5vw, 0.875rem);
+}
+
+.duplicates {
+  font-size: clamp(0.575rem, 3vw, 0.75rem);
+}
+
+@each $rarity, $color in $rarity-colors {
+  .rarity#{$rarity} {
+    @include rarity-gradient($color);
+  }
+
+  .rarityTag#{$rarity} {
+    background-color: rgba($color, 0.55);
+    color: if($rarity == 2, #1a202c, #ffffff);
+  }
+}

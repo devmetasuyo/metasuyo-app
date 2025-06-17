@@ -1,0 +1,20 @@
+.menu2 {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+
+  li a {
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 2px solid transparent;
+  }
+
+  li a:hover {
+    color: #f8f9fa;
+    border-bottom: 2px solid #f8f9fa;
+  }
+}

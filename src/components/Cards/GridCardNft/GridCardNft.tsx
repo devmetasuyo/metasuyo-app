@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { FaRegEye } from "react-icons/fa";
 
 import Image from "next/image";
-import { Spinner } from "@/components/Common";
+import { Spinner } from "@/components/common";
 
 interface GridCardNftProps {
   id: number;

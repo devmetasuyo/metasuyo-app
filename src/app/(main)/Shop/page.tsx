@@ -1,71 +1,70 @@
 "use client";
 
-import { Banner, Degradado, Title } from "@/components";
+import { Banner, Degradado } from "@/components";
 import textos from "@/utils/text.json";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import FilterButton from "./FilterButton";
-import FilterDrawer from "./FilterDrawer";
+
 import styles from "./Ecommerce.module.scss";
 import NftItem from "./NftItem";
 import Pagination from "./Pagination";
-import { Product } from "@/types/product";
-import { useRouter } from "next/navigation";
 
 import useOrder from "@/hooks/useOrder";
 import Cart from "./Cart";
+import { Filters } from "./Filters";
+import { CartProduct } from "../Dashboard/pos/page";
+
+const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
 
 function EcommercePage() {
-  const { addItemToCart,order,removeItemFromCart ,totalPrice} = useOrder();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const {
+    addItemToCart,
+    order,
+    removeItemFromCart,
+    totalPrice,
+    totalItems,
+    checkItemsInCart,
+  } = useOrder();
+
+  const [products, setProducts] = useState<CartProduct[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
-  const router = useRouter();
+
+  const [productsPriceRange] = useState<
+    [number, number]
+  >([0, 100000]);
+
+  const [filters, setFilters] = useState<{ price: [number, number] }>({
+    price: [0, 100000],
+  });
 
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    async function getAllProducts() {
-      const response = await fetch("/api/products/all");
-      const data = await response.json();
-      if (data) {
-        setProducts(data.products);
-      }
+  const getAllProducts = useCallback(async () => {
+    const response = await fetch("/api/products/all");
+    const data = await response.json();
+    if (data) {
+      setProducts(data.products);
     }
+  }, [products]);
+
+  useEffect(() => {
+    if (order && products.length > 0) checkItemsInCart(products);
+  }, [products, order]);
+
+  useEffect(() => {
     getAllProducts();
   }, []);
 
-  const handleFilterChange = useCallback(
-    (filters?: { categoria?: string; precio?: [0, 1000] }) => {
-      let updatedProducts = products;
-      if (filters && filters.categoria) {
-        updatedProducts = updatedProducts.filter(
-          (products) => products.categoria === filters.categoria
-        );
-      }
-      if (filters) {
-        updatedProducts = updatedProducts.filter((products) => {
-          if (filters.precio)
-            products.precio >= filters.precio[0] &&
-              products.precio <= filters.precio[1];
-        });
-      }
-      setFilteredProducts(updatedProducts);
-      setCurrentPage(1);
-    },
-    [products]
-  );
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
   const currentProducts = useMemo(() => {
-    handleFilterChange();
-    return filteredProducts;
-  }, [products, filteredProducts]);
+    return products.filter((product) => {
+      if (
+        +product.precio >= filters.price[0] &&
+        +product.precio <= filters.price[1]
+      )
+        return products;
+    });
+  }, [products, filters]);
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
+  const totalPages = Math.ceil(currentProducts.length / itemsPerPage);
 
   return (
     <>
@@ -84,38 +83,50 @@ function EcommercePage() {
         }}
       />
       <Degradado />
-      <Title title="Colección de NFTs" />
-
-      <FilterDrawer
-        isOpen={showFilters}
-        onClose={toggleFilters}
-        onFilterChange={handleFilterChange}
-      />
       <div className={styles.container}>
-        <FilterButton onClick={toggleFilters} />
-        <Cart order={order} handleRemoveItemFromCart={removeItemFromCart} totalPrice={totalPrice}  />
+        <div className={styles.filterContainer}>
+          <Filters
+            values={{
+              priceMin: productsPriceRange[0],
+              priceMax: productsPriceRange[1],
+            }}
+            onFilterChange={(filtersIn) => {
+              setFilters({ price: filtersIn.price ?? filters.price });
+            }}
+          />
+          <Cart
+            to={adminWallet}
+            totalItems={totalItems}
+            order={order}
+            handleRemoveItemFromCart={removeItemFromCart}
+            totalPrice={totalPrice}
+          />
+        </div>
         <div className={styles.nftGrid}>
           {currentProducts.map(
-            ({ precio, categoria, id, image, nombre, descripcion }) => (
-              <NftItem
-                key={id}
-                id={id}
-                categoria={categoria}
-                descripcion={descripcion}
-                image={image}
-                nombre={nombre}
-                precio={Number(precio)}
-                onBuy={() =>
-                  addItemToCart({
-                    id: id.toString(),
-                    imageSrc: image,
-                    name: nombre,
-                    quantity: 1,
-                    price: Number(precio),
-                  })
-                }
-              />
-            )
+            ({ precio, categoria, id, image, nombre, descripcion, cantidad }) =>
+              cantidad > 0 && (
+                <NftItem
+                  key={id}
+                  id={id}
+                  cantidad={cantidad}
+                  categoria={categoria}
+                  descripcion={descripcion}
+                  image={image}
+                  nombre={nombre}
+                  precio={Number(precio)}
+                  onBuy={() => {
+                    if (!id) return;
+                    addItemToCart({
+                      id: id.toString(),
+                      imageSrc: image,
+                      name: nombre,
+                      quantity: 1,
+                      price: Number(precio),
+                    });
+                  }}
+                />
+              )
           )}
         </div>
         <Pagination

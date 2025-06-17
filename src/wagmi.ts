@@ -1,18 +1,20 @@
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { base, baseSepolia } from "wagmi/chains";
 import { coinbaseWallet } from "wagmi/connectors";
+import { PrivyProvider } from '@privy-io/react-auth';
 
 export function getConfig() {
   return createConfig({
     chains: [baseSepolia, base],
-    ssr: true,
     multiInjectedProviderDiscovery: false,
     connectors: [
       coinbaseWallet({
         appName: "Metasuyo",
-        preference: "smartWalletOnly",
+        preference: "all",
+        version: "4",
       }),
     ],
+    ssr: true,
     storage: createStorage({
       storage: cookieStorage,
     }),

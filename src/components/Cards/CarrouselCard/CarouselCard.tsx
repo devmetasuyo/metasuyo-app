@@ -18,10 +18,6 @@ export const CarouselCard = ({ id, href, info, index }: Props) => {
   const router = useRouter();
   return (
     <div
-      style={{
-        maxWidth: "300px",
-        marginRight: "10px",
-      }}
       className={clsx(
         "keen-slider__slide",
         index ? "number-slide" + index : "",

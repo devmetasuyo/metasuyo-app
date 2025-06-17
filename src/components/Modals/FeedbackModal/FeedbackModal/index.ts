@@ -1,4 +1,4 @@
-export { FeedbackModal } from "./FeddbackModal";
+export { FeedbackModal } from "./FeedbackModal";
 export {
   FeedbackModalProvider,
   FeedbackModalContext,

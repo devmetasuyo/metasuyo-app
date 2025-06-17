@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "clientes" ADD COLUMN     "actualizado_el" DATE DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "creado_el" DATE DEFAULT CURRENT_TIMESTAMP;

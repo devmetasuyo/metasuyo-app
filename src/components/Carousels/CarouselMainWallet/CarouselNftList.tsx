@@ -4,7 +4,7 @@ import { useGetNftsByCollection } from "@/hooks/useGetNftsByCollection";
 import { CarouselMainNft } from "./CarouseMainNft";
 
 import { CarouselNftVerifyOwner } from "../Carousel/CarouselNftVerifyOwner";
-import { Spinner } from "@/components/Common";
+import { Spinner } from "@/components/common";
 
 export const CarouselNftList = ({ collectionId }: { collectionId: number }) => {
   const contractAddress = process.env

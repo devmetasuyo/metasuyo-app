@@ -11,8 +11,6 @@ export const POST = async (req: NextRequest) => {
 
   if (files) {
     files.forEach(async (file) => {
-      console.log(file);
-
       if (file.name === "undefined") return;
 
       const buffer = Buffer.from(await file.arrayBuffer());

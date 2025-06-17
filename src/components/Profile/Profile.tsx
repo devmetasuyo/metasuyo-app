@@ -1,188 +1,240 @@
 "use client";
 import "./Profile.scss";
-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import { useBasename } from "@/hooks/useBasename";
+import { Button } from "../common";
+import { usePrivySession } from "@/hooks/usePrivySession";
 
-export function Profile() {
-  const { address } = useAccount();
-  const { data } = useBasename(address as `0x${string}`);
+interface ClienteData {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  telefono: string;
+  direccion: string;
+  tipo_documento: "DNI" | "RUC";
+  documento: string;
+}
 
-  const [showModal, setShowModal] = useState(false);
-  const [facebookUrl, setFacebookUrl] = useState("");
-  const [instagramUrl, setInstagramUrl] = useState("");
-  const [name, setName] = useState(address);
-  const [xUrl, setXUrl] = useState("");
-  const [isAddressVerified, setIsAddressVerified] = useState(false);
+export function Profile({ wallet }: { wallet: string }) {
+  const { data } = useBasename(wallet as `0x${string}`);
   const route = useRouter();
-  function getLastTwoDigits(address: string) {
-    return address.slice(-2);
-  }
+  const [showModal, setShowModal] = useState(false);
+
+  // Estado para controlar si el usuario está logueado (solo para edición)
+  const { session, loading } = usePrivySession();
+
+  const [clienteData, setClienteData] = useState<ClienteData>({
+    nombre: " ",
+    apellido: " ",
+    correo: " ",
+    telefono: " ",
+    direccion: " ",
+    tipo_documento: "DNI",
+    documento: " ",
+  });
 
   useEffect(() => {
-    if (!address) {
+    if (!wallet) {
       route.replace("/");
     } else {
-      // Aquí puedes agregar la lógica para verificar la dirección
-      // Por ejemplo, una llamada a una API o un contrato inteligente
-      // Por ahora, simplemente simularemos una verificación después de 2 segundos
-      const timer = setTimeout(() => {
-        setIsAddressVerified(true);
-      }, 2000);
-
-      return () => clearTimeout(timer);
+      fetchClienteData(wallet);
+      const params = new URLSearchParams(window.location.search);
+      const showModal = params.get("showModal");
+      if (showModal === "true") {
+        setShowModal(true);
+      }
     }
-  }, [address]);
+  }, [wallet]);
 
-  function generateColor(address: string) {
-    const lastTwoDigits = getLastTwoDigits(address);
-    const colorValue = parseInt(lastTwoDigits, 16);
-    const red = (colorValue * 50) % 256;
-    const green = (colorValue * 100) % 256;
-    const blue = (colorValue * 150) % 256;
-    return `rgb(${red}, ${green}, ${blue})`;
-  }
+  // Modifica fetchClienteData para recibir el wallet
+  const fetchClienteData = async (wallet: string) => {
+    try {
+      console.log("[Profile] fetchClienteData para wallet:", wallet);
+      const response = await fetch(`/api/profile/${wallet}`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setClienteData({
+          nombre: data.cliente.nombre ?? "",
+          apellido: data.cliente.apellido ?? "",
+          correo: data.cliente.correo ?? "",
+          telefono: data.cliente.telefono ?? "",
+          direccion: data.cliente.direccion ?? "",
+          tipo_documento: data.cliente.tipo_documento ?? "DNI",
+          documento: data.cliente.documento ?? "",
+        });
+        console.log("[Profile] Datos de cliente cargados:", data.cliente);
+      } else {
+        console.log("[Profile] Error al cargar datos de cliente:", data);
+      }
+    } catch (error) {
+      console.error("[Profile] Error fetching cliente data:", error);
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setClienteData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/profile/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          wallet: session?.wallet,
+          ...clienteData,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.status === "success") {
+        alert("Perfil actualizado correctamente");
+        setShowModal(false);
+        fetchClienteData(session?.wallet || ""); 
+      } else {
+        alert(data.message || "Error al actualizar el perfil");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Error al actualizar el perfil");
+    }
+  };
+
+  // Al intentar editar, verifica si hay sesión Privy
+  const handleEditProfile = () => {
+    if (!session) {
+      alert("Debes iniciar sesión para editar tu perfil.");
+      // Aquí podrías abrir un modal de login Privy si tienes uno
+      return;
+    }
+    setShowModal(true);
+  };
+
+  if (loading || !wallet) return null;
 
   return (
     <main>
       <div className="profile">
-        {isAddressVerified && (
-          <div className="container-profile">
-            <div
-              className="circle-profile"
-              style={{ background: generateColor(address as string) }}
-            >
-              <img src={data?.avatar} />
-            </div>
-            <div className="name-profile">
-              <span>Nombre: {data?.basename}</span>
-              <br />
-              <br />
-              <span>Mi wallet: {address}</span> <br />
-              <br />
-              <span>Redes sociales</span>
-              <div className="social-profile">
-                <button
-                  className="button-profile"
-                  onClick={() => window.open(data.facebook, "_blank")}
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fab"
-                    width="25"
-                    height="25"
-                    data-icon="facebook-f"
-                    className=" fa-facebook-f "
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 320 512"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M80 299.3V512H196V299.3h86.5l18-97.8H196V166.9c0-51.7 20.3-71.5 72.7-71.5c16.3 0 29.4 .4 37 1.2V7.9C291.4 4 256.4 0 236.2 0C129.3 0 80 50.5 80 159.4v42.1H14v97.8H80z"
-                    ></path>
-                  </svg>
-                </button>
-                <button
-                  className="button-profile"
-                  onClick={() => window.open(data?.instagram, "_blank")}
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fab"
-                    width="25"
-                    height="25"
-                    data-icon="instagram"
-                    className=" fa-instagram "
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
-                    ></path>
-                  </svg>
-                </button>
-                <button
-                  className="button-profile"
-                  onClick={() => window.open(data?.x, "_blank")}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 50 50"
-                  >
-                    <path d="M 6.9199219 6 L 21.136719 26.726562 L 6.2285156 44 L 9.40625 44 L 22.544922 28.777344 L 32.986328 44 L 43 44 L 28.123047 22.3125 L 42.203125 6 L 39.027344 6 L 26.716797 20.261719 L 16.933594 6 L 6.9199219 6 z"></path>
-                  </svg>
-                </button>
-                <br />
-                <br />
-                {/* {session != null &&
-                address.toLowerCase() == session.user?.id?.toLowerCase() && (
-                  <button
-                    className="button-primary"
-                    onClick={() => {
-                      setShowModal(true);
-                    }}
-                  >
-                    Editar
-                  </button>
-                )} */}
-              </div>
-            </div>
+        <div className="container-profile">
+          <div className="circle-profile">
+            <img src={data?.avatar} alt="Perfil" defaultValue={"/icon.png"} />
           </div>
-        )}
+          <div className="name-profile">
+            <span>
+              Nombre: {clienteData?.nombre ?? "Usuario"} {clienteData?.apellido}
+            </span>
+            <br />
+            <span>Email: {clienteData?.correo ?? "No disponible"}</span>
+            <br />
+            <span>Teléfono: {clienteData?.telefono ?? "No disponible"}</span>
+            <br />
+            <span>Dirección: {clienteData?.direccion ?? "No disponible"}</span>
+            <br />
+            {clienteData?.tipo_documento && (
+              <span>
+                {clienteData.tipo_documento}:{" "}
+                {clienteData?.documento ?? "No disponible"}
+              </span>
+            )}
+            <br />
+            <span className="wallet-text">Wallet: {wallet}</span>
+            <br />
+            <Button onClick={handleEditProfile}>Editar Perfil</Button>
+          </div>
+        </div>
 
-        {showModal && (
+        {showModal && session && (
           <div className="modal">
             <div className="modal-body">
-              <h1 style={{ textAlign: "center" }}>Mis redes sociales</h1>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value as `0x${string}`)}
-                placeholder="Name"
-              />
-              <input
-                type="text"
-                value={facebookUrl}
-                onChange={(e) => setFacebookUrl(e.target.value)}
-                placeholder="Facebook URL"
-              />
-              <input
-                type="text"
-                value={instagramUrl}
-                onChange={(e) => setInstagramUrl(e.target.value)}
-                placeholder="Instagram URL"
-              />
-              <input
-                type="text"
-                value={xUrl}
-                onChange={(e) => setXUrl(e.target.value)}
-                placeholder="X URL"
-              />
-              <button
-                className="button-primary"
-                onClick={() => {
-                  setShowModal(false);
-                }}
-              >
-                Guardar
-              </button>
-              <button
-                className="button-secondary"
-                onClick={() => setShowModal(false)}
-              >
-                Cerrar
-              </button>
+              <h2>Editar Perfil</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={clienteData.nombre ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Nombre (obligatorio)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="apellido"
+                    value={clienteData.apellido ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Apellido (obligatorio)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="email"
+                    name="correo"
+                    value={clienteData.correo ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Correo electrónico (obligatorio)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="tel"
+                    name="telefono"
+                    value={clienteData.telefono ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Teléfono (obligatorio)"
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="direccion"
+                    value={clienteData.direccion ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Dirección (obligatorio)"
+                  />
+                </div>
+                <div className="form-group">
+                  <select
+                    name="tipo_documento"
+                    value={clienteData.tipo_documento ?? "DNI"}
+                    onChange={handleInputChange}
+                  >
+                    <option value="DNI">DNI</option>
+                    <option value="RUC">RUC</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="documento"
+                    value={clienteData.documento ?? ""}
+                    onChange={handleInputChange}
+                    placeholder="Número de documento (obligatorio)"
+                  />
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="button-primary">
+                    Guardar
+                  </button>
+                  <button
+                    type="button"
+                    className="button-secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

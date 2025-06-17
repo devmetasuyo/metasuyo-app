@@ -11,22 +11,19 @@ interface MyCarouselProps extends React.PropsWithChildren {}
 
 export const CarouselContainer: React.FC<MyCarouselProps> = ({ children }) => {
   const [sliderRef] = useKeenSlider<HTMLDivElement>({
-    breakpoints: {
-      "(min-width: 600px)": {
-        slides: { perView: 4, spacing: 10 },
-      },
-      "(min-width: 1000px)": {
-        slides: { perView: 6, spacing: 15 },
-      },
+    mode: "snap",
+    loop: true,
+    rtl: false,
+    slides: {
+      perView: "auto",
     },
-    slides: { perView: 1 },
   });
 
   return (
     <div
       ref={sliderRef}
       className={clsx(styles.carouselContainer, "keen-slider")}
-      style={{ minHeight: "256px", marginBottom: "20px" }}
+      style={{ minHeight: "256px", marginBottom: "1.5rem" }}
     >
       {children}
     </div>

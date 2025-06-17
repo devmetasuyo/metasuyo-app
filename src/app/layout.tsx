@@ -1,17 +1,13 @@
 import "./globals.scss";
 
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { headers } from "next/headers";
-import { type ReactNode } from "react";
-import { cookieToInitialState } from "wagmi";
-import { getConfig } from "../wagmi";
-import { FeedbackModal } from "@/components/Modals/FeedbackModal";
-import dynamic from "next/dynamic";
 
-const DynamicProviders = dynamic(() => import("@/components/providers"), {
-  ssr: false,
-});
+import { getCookieState } from "@/utils/getCookieState";
+import { FeedbackModal } from "@/components/Modals/FeedbackModal";
+
+import Providers from "@/components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,17 +29,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout(props: { children: ReactNode }) {
-  const initialState = cookieToInitialState(
-    getConfig(),
-    headers().get("cookie")
-  );
+  const initialState = getCookieState();
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={inter.className}>
-        <DynamicProviders initialState={initialState}>
+        <Providers initialState={initialState}>
           {props.children}
           <FeedbackModal />
-        </DynamicProviders>
+        </Providers>
       </body>
     </html>
   );

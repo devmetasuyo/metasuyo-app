@@ -4,7 +4,7 @@ import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 import styles from "./styles.module.scss";
 import { Nft } from "@/types";
-import { Spinner } from "@/components/Common";
+import { Spinner } from "@/components/common";
 import { CarouselCard } from "@/components/Cards";
 
 interface MyCarouselProps {
@@ -21,20 +21,29 @@ export const Carousel: React.FC<MyCarouselProps> = ({ collections }) => {
     loop: true,
     breakpoints: {
       "(min-width: 600px)": {
-        slides: { perView: 4, spacing: 10 },
+        slides: {
+          perView: 1.25,
+        },
       },
-      "(min-width: 1000px)": {
-        slides: { perView: 6, spacing: 15 },
+      "(min-width: 768px)": {
+        slides: {
+          perView: 2,
+        },
+      },
+      "(min-width: 1024px)": {
+        slides: {
+          perView: 3,
+        },
+      },
+      "(min-width: 1248px)": {
+        slides: {
+          perView: 3.25,
+        },
       },
     },
-    slides: { perView: 1 },
-    // slideChanged(slider) {
-    //   setCurrentSlide(slider.track.details.rel);
-    // },
-    // created() {
-    //   setLoading(false);
-    //   setSlider(true);
-    // },
+    slides: {
+      perView: 1,
+    },
   });
 
   if (loading) {

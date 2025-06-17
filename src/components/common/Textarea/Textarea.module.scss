@@ -1,0 +1,62 @@
+.inputSelectContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.inputSelectContainer textarea {
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc; /* Agrega un borde */
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.inputSelectContainer textarea:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.inputSelectContainer textarea {
+  resize: none; /* Evita que el textarea se pueda redimensionar */
+  height: 200px; /* Define un tamaño fijo para el textarea */
+}
+
+@media (max-width: 600px) {
+  .inputSelectContainer textarea {
+    padding: 5px;
+  }
+}
+
+.inputSelectContainer textarea {
+  width: "auto";
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc; /* Agrega un borde */
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.inputSelectContainer textarea:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+.errorForm {
+  color: red;
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+  .inputSelectContainer textarea {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .inputSelectContainer textarea {
+    width: auto;
+  }
+}

@@ -1,6 +1,5 @@
 import { useReadContract } from "wagmi";
-import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi"; // Asegúrate de tener el ABI del contrato
-
+import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi";
 export const useGetCollection = (
   contractAddress: `0x${string}`,
   collectionId: number

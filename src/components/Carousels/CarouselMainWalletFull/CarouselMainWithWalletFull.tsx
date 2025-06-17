@@ -5,7 +5,7 @@ import { useGetCollectionNames } from "@/hooks/useGetCollectionNames";
 import { CarouselNftList } from "./CarouselNftList";
 
 import { CarouselWrapperData } from "./CarouselWrapperData";
-import { Spinner } from "@/components/Common";
+import { Spinner } from "@/components/common";
 
 export const CarouselMainWalletFull = () => {
   const contractAddress = process.env

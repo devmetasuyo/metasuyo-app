@@ -14,7 +14,7 @@ export interface NFTOwnershipProps {
 export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
   const addressContract = process.env
     .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, isConnecting } = useAccount();
   const { data: owner } = useGetNftOwner(addressContract, id);
 
   const [formData, setFormData] = useState({
@@ -29,8 +29,12 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
 
   const sendTransfer = () => {
     // Implementar la lógica de transferencia
-    console.log("Transferir a:", formData.walletTo);
+    // TODO "Transferir a:", formData.walletTo
   };
+
+  if (isConnecting) {
+    return <span>Loading...</span>;
+  }
 
   if (owner?.toLowerCase() === userAddress?.toLowerCase()) {
     return (
@@ -65,6 +69,15 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
           nftData={data}
           onSuccess={() => {}}
         />
+        <span
+          style={{ color: "white", marginTop: "0.5rem", fontSize: "0.8rem" }}
+        >
+          Want to try this out? ask for your UID writing to @luisotravez in
+          Telegram{" "}
+          <a style={{ color: "white" }} href="https://T.me/luisotravez">
+            @luisotravez
+          </a>
+        </span>
       </>
     );
   }

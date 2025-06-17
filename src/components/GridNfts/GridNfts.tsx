@@ -10,9 +10,6 @@ export const GridNfts = () => {
   const { collectionNames, isLoading } = useGetCollectionNames(address);
 
   if (isLoading) return <Spinner />;
-
-  console.log(collectionNames);
-
   return (
     <div
       style={{

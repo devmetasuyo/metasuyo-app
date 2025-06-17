@@ -1,5 +1,5 @@
 import { useGetNftOwner } from "@/hooks/useGetNftOwner";
-import { Spinner } from "../../Common";
+import { Spinner } from "../../common";
 
 interface Props extends React.PropsWithChildren {
   id: number;

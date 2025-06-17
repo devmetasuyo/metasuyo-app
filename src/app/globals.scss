@@ -1,3 +1,4 @@
+@use "sass:color";
 @import "../styles/_variables.scss";
 @import "../styles/utils/generateThemeColors.scss";
 
@@ -87,29 +88,41 @@ h6 {
   text-wrap: balance;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  margin: 0;
+  margin-block: 0;
 }
 
 p {
   text-wrap: pretty;
+  margin-block: 0;
 }
 
 :root {
-  --colorPrimary: #{$primary-color};
-  --colorSecondary: #{$secondary-color};
-  --colorGray-20: rgba(#{$gray-color}, 0.2);
-  //   --colorAccent: #{$accentColor};
-  //   --colorAccentDark: #{$accentColorDark};
-  //   --colorBackground: #{$backgroundColor};
-  //   --colorBorder: #{$borderColor};
-  //   --colorText: #{$textColor};
-  //   --colorTextMuted: #{$textMuted};
-  --lightenedPrimary-10: lighten(#{$primary-color}, 10%);
-  --lightenedPrimary-60: lighten(#{$primary-color}, 60%);
-  --borderRadius: #{$border-radius};
-  --spacingUnit: #{$spacing-unit};
-  --breakpointSm: #{$breakpoint-sm};
-  --breakpointMd: #{$breakpoint-md};
-  --breakpointLg: #{$breakpoint-lg};
 
-  --lightTextColor: #{$light-text-color};
+  // Colors
+  --primary-color: #{$primary-color};
+  --secondary-color: #{$secondary-color};
+  --success-color: #{$success-color};
+  --info-color: #{$info-color};
+  --warning-color: #{$warning-color};
+  --danger-color: #{$danger-color};
+  --light-color: #{$light-color};
+  --dark-color: #{$dark-color};
+  --white-color: #{$white-color};
+  --black-color: #{$black-color};
+  --gray-color: #{$gray-color};
+  --gray-color-10: #{color.adjust($gray-color, $alpha: 0.1)};
+  --gray-color-20: #{color.adjust($gray-color, $alpha: 0.2)};
+  --primary-lightened-10: lighten(#{$primary-color}, 10%);
+  --primary-lightened-60: lighten(#{$primary-color}, 60%);
+
+  --border-radius: #{$border-radius};
+  --spacing-unit: #{$spacing-unit};
+
+  --breakpoint-sm: #{$breakpoint-sm};
+  --breakpoint-md: #{$breakpoint-md};
+  --breakpoint-lg: #{$breakpoint-lg};
+
+  --light-text-color: #{$light-text-color};
+  --light-hover-color: #{$light-hover-color};
 }

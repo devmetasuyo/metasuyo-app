@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/Common/Button";
+import { Button } from "@/components";
 import styles from "./Pagination.module.scss";
 
 interface PaginationProps {

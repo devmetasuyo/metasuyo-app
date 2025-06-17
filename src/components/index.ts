@@ -1,6 +1,6 @@
 export * from "./Banner";
 export * from "./Carousels";
-export * from "./Common";
+export * from "./common";
 export * from "./GridNfts";
 export * from "./ModalLogin";
 export * from "./Profile";

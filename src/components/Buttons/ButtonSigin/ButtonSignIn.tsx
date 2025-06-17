@@ -1,35 +1,31 @@
-import { useCallback } from "react";
-import { useAccount, useConnect } from "wagmi";
-import { Button } from "../../Common/Button";
+"use client";
+
+import { useAccount } from "wagmi";
+import { Button } from "../../common/Button";
+import { usePrivySession } from "@/hooks/usePrivySession";
 
 export function ButtonSignIn({
   children,
   style,
 }: React.PropsWithChildren<{ style?: React.CSSProperties }>) {
-  const { connectors, connect } = useConnect();
+  const { login, session, loading } = usePrivySession();
   const { address } = useAccount();
-  const createWallet = useCallback(() => {
-    const coinbaseWalletConnector = connectors.find(
-      (connector) => connector.id === "coinbaseWalletSDK"
-    );
-    if (coinbaseWalletConnector) {
-      connect({ connector: coinbaseWalletConnector });
-    }
-  }, [connectors, connect]);
+
   return (
     <>
-      {!address && (
+      {!session && (
         <Button
           size="xs"
-          onClick={createWallet}
+          onClick={login}
           style={{
             display: "flex",
             alignItems: "center",
             gap: 5,
             ...style,
           }}
+          disabled={loading}
         >
-          {children}
+          {loading ? "Conectando..." : children}
         </Button>
       )}
     </>

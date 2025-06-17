@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
 
-$primary-color: #f5a602; //in
+$primary-color: #f5a602;
 $secondary-color: #000000;
 $success-color: #28a745;
 $info-color: #17a2b8;
@@ -12,6 +12,8 @@ $white-color: #ffffff;
 $black-color: #000000;
 $gray-color: #6c757d;
 
+//#131314
+
 $disabled-background-color: #e0e0e0;
 $disabled-text-color: #a0a0a0;
 $primary-bg-color: $primary-color;
@@ -21,14 +23,13 @@ $info-bg-color: lighten($info-color, 20%);
 $warning-bg-color: $warning-color;
 $danger-bg-color: $danger-color;
 
-
 $primary-text-color: $white-color;
 $secondary-text-color: $white-color;
 $success-text-color: $white-color;
 $info-text-color: $black-color;
 $warning-text-color: $black-color;
 $danger-text-color: $white-color;
-$light-text-color: $black-color; // in
+$light-text-color: $black-color;
 $dark-text-color: $white-color;
 $white-text-color: $black-color;
 $black-text-color: $white-color;

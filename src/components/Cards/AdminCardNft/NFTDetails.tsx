@@ -55,7 +55,6 @@ export function NFTDetails({
         e.preventDefault();
         e.stopPropagation();
         handleSubmit((data) => {
-          console.log(data);
           onSubmit(data);
         });
       }}

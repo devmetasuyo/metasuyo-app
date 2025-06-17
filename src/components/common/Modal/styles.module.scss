@@ -1,6 +1,5 @@
 .modal {
-  border-radius: 1rem;
-
+  border-radius: calc(var(--spacing-unit) * 2);
   animation: slideUp 0.3s ease-out;
   transform-origin: bottom;
   padding: 0;

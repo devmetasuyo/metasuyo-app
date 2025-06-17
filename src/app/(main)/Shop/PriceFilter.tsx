@@ -5,11 +5,15 @@ import styles from "./PriceFilter.module.scss";
 
 const PriceFilter = ({
   onPriceChange,
+  min,
+  max,
 }: {
   onPriceChange: (min: number, max: number) => void;
+  min: number;
+  max: number;
 }) => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(5);
+  const [minPrice, setMinPrice] = useState(min);
+  const [maxPrice, setMaxPrice] = useState(max);
 
   const handleMinChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Math.min(Number(event.target.value), maxPrice);
@@ -40,8 +44,8 @@ const PriceFilter = ({
         <input
           type="range"
           id="minPrice"
-          min="0"
-          max="5"
+          min={0}
+          max={min}
           value={minPrice}
           onChange={handleMinChange}
           className={styles.rangeInput}
@@ -61,8 +65,8 @@ const PriceFilter = ({
         <input
           type="range"
           id="maxPrice"
-          min="0"
-          max="5"
+          min={0}
+          max={max}
           value={maxPrice}
           onChange={handleMaxChange}
           className={styles.rangeInput}

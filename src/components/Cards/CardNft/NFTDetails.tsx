@@ -2,7 +2,7 @@ import React from "react";
 
 import { Nft } from "@/types/nft";
 import { useGetCollectionNames } from "@/hooks/useGetCollectionNames";
-import { Input, Select } from "@/components/Common";
+import { Input, Select } from "@/components/common";
 
 interface NFTDetailsProps {
   data: Nft;

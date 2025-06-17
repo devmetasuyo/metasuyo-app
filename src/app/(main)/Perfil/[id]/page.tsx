@@ -1,20 +1,14 @@
 "use client";
+import { Banner, Degradado, GridNfts, Profile } from "@/components";
+//import { ZoraList } from "./zoraList";
+import { usePrivySession } from "@/hooks/usePrivySession";
 
-import { Banner, Degradado, GridNfts, Profile, Title } from "@/components";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useAccount } from "wagmi";
+export default function PerfilPage() {
+  const { session, loading } = usePrivySession();
 
-export default function Article({ params }: any) {
-  const { address } = useAccount();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (address === null || !params.id) {
-      router.replace("/");
-    }
-  }, [params.id, router]);
-
+  if (loading) return null;
+  if (!session) return null;
+  
   return (
     <div style={{ background: "#040200" }}>
       <Banner
@@ -30,9 +24,9 @@ export default function Article({ params }: any) {
         title={""}
       />
       <Degradado />
-      <Profile />
-      <Title title="Mis NFTS" />
+      <Profile wallet={session?.wallet as string}/>
       <GridNfts />
+      {/*<ZoraList address={session?.wallet as string} />*/}
     </div>
   );
-}
+} 

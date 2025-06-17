@@ -1,4 +1,4 @@
-import { CardImage } from "@/components/Common/Card/CardImage";
+import { CardImage } from "@/components/common/Card/CardImage";
 import React from "react";
 
 export function NFTCardImage({

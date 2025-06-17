@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../Common";
+import { Button } from "../common";
 import {
   FaTimes,
   FaSpinner,

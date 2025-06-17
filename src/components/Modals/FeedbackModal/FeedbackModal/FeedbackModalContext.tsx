@@ -1,71 +1,45 @@
 "use client";
 
-import React, {
-  createContext,
-  useReducer,
-  ReactNode,
-  useCallback,
-} from "react";
-
-type FeedbackModalState = {
-  isOpen: boolean;
-  message: string;
-  isError: boolean;
-};
-
-type FeedbackModalAction =
-  | { type: "OPEN"; message: string; isError: boolean }
-  | { type: "CLOSE" };
-
-type FeedbackModalContextType = {
-  state: FeedbackModalState;
-  openModal: (message: string, isError: boolean) => void;
-  closeModal: () => void;
-};
-
-const initialState: FeedbackModalState = {
-  isOpen: false,
-  message: "",
-  isError: false,
-};
-
-function feedbackModalReducer(
-  state: FeedbackModalState,
-  action: FeedbackModalAction
-): FeedbackModalState {
-  switch (action.type) {
-    case "OPEN":
-      return {
-        ...state,
-        isOpen: true,
-        message: action.message,
-        isError: action.isError,
-      };
-    case "CLOSE":
-      return { ...state, isOpen: false };
-    default:
-      return state;
-  }
-}
+import React, { createContext, useReducer, useCallback } from "react";
+import { FeedbackModalContextType, FeedbackModalState } from "./types";
+import {
+  feedbackModalInitialState,
+  feedbackModalReducer,
+} from "./FeedBackModalReducer";
 
 export const FeedbackModalContext = createContext<
   FeedbackModalContextType | undefined
 >(undefined);
 
-export function FeedbackModalProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(feedbackModalReducer, initialState);
+export const FeedbackModalProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [state, dispatch] = useReducer(
+    feedbackModalReducer,
+    feedbackModalInitialState
+  );
 
-  const openModal = useCallback((message: string, isError: boolean) => {
-    dispatch({ type: "OPEN", message, isError });
-  }, []);
+  const openModal = useCallback(
+    (params: Omit<FeedbackModalState, "isOpen">) =>
+      dispatch({ type: "OPEN", payload: { ...params } }),
+    []
+  );
 
-  const closeModal = useCallback(() => {
-    dispatch({ type: "CLOSE" });
-  }, []);
+  const closeModal = useCallback(() => dispatch({ type: "CLOSE" }), []);
+
+  const updateModal = useCallback(
+    (params: Partial<FeedbackModalState>) =>
+      dispatch({ type: "UPDATE", payload: params }),
+    []
+  );
 
   return (
-    <FeedbackModalContext.Provider value={{ state, openModal, closeModal }}>
+    <FeedbackModalContext.Provider
+      value={{ state, openModal, closeModal, updateModal }}
+    >
       {children}
     </FeedbackModalContext.Provider>
   );
-}
+};

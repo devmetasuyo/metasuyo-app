@@ -10,7 +10,7 @@ import {
   Input,
   Spinner,
   Alert,
-} from "../Common";
+} from "../common";
 import UIDList from "./UIDList";
 import { useCreateUIDs } from "@/hooks/useCreateUIDs";
 import { useFeedbackModal } from "@/components/Modals/FeedbackModal";
@@ -91,19 +91,26 @@ export default function UIDForm({}: Props) {
 
   useEffect(() => {
     if (writeError) {
-      openModal(
-        `Error al iniciar la transacción: ${writeError.message}`,
-        false
-      );
+      openModal({
+        title: `Error al escribir en el contrato`,
+        type: "danger",
+        message: writeError.message,
+      });
       setFormSubmitted(false);
     } else if (transactionError) {
-      openModal(
-        `Error durante la transacción: ${transactionError.message}`,
-        false
-      );
+      openModal({
+        title: `Error durante la transacción`,
+        type: "danger",
+        message: transactionError.message,
+      });
       setFormSubmitted(false);
     } else if (isTransactionSuccess) {
-      openModal("UIDs creados con éxito", false);
+      openModal({
+        title: "UIDs creados con éxito",
+        type: "success",
+        message:
+          "Los UIDs han sido creados exitosamente. Puedes verlos en la sección de UIDs.",
+      });
       reset();
     }
   }, [writeError, transactionError, isTransactionSuccess, openModal, reset]);
@@ -202,7 +209,15 @@ export default function UIDForm({}: Props) {
   return (
     <Card style={{ maxWidth: "900px", width: "100%" }}>
       <CardHeader>
-        <h2 style={{ textAlign: "center" }}>Creación Códigos promocionales</h2>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "1.25rem",
+            fontWeight: "bold",
+          }}
+        >
+          Creación Códigos promocionales
+        </h2>
       </CardHeader>
       <CardContent>{renderFormContent()}</CardContent>
     </Card>

@@ -1,97 +1,172 @@
-// src/app/(main)/Shop/Cart.tsx
 "use client";
 
+import { PiCurrencyDollar, PiCurrencyEthFill } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { Order } from "@/types/order";
 import styles from "./Cart.module.scss";
-import { useAccount } from "wagmi";
+import {
+  Button,
+  Drawer,
+  DrawerActions,
+  DrawerBody,
+  DrawerHeader,
+  Text,
+} from "@/components";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { CartItem } from "@/types/cartItem";
+import { usePrivySession } from "@/hooks/usePrivySession";
 
 interface CartProps {
+  to: `0x${string}`;
+  totalItems: number;
   totalPrice: number;
   order: Order | null;
-  handleRemoveItemFromCart: (id: string) => void;
+  handleRemoveItemFromCart: (item: CartItem) => void;
 }
 
 const Cart: React.FC<CartProps> = ({
+  to,
+  totalItems,
   totalPrice,
   order,
   handleRemoveItemFromCart,
 }) => {
-  const { address } = useAccount();
+  const { session, loading } = usePrivySession();
+  const [price, setPrice] = useState(0);
+
+  useEffect(() => {
+    const price = localStorage.getItem("price");
+    if (price) {
+      setPrice(Number(price));
+    }
+  }, []);
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const handleRedirectToShop = async () => {
-    if (!order || !address) {
-      alert("No hay orden para procesar o no tienes una cuenta conectada");
+  const handleRedirectToCheckout = async () => {
+    if (!order || !session) {
+      alert("No hay orden para procesar o no tienes una sesión activa");
       return;
     }
-
-    const products = Object.values(order.cart).map((item) => ({
-      id: item.id,
-      sub_total: item.price * item.quantity,
-      cantidad: item.quantity,
-    }));
-
-    try {
-      const response = await fetch("/api/invoices/manage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: order.id,
-          wallet: address,
-          total: totalPrice,
-          products,
-        }),
-      });
-
-      const data = await response.json();
-      if (data.status === "success") {
-        router.push(`/Shop/Cart/${order.id}`);
-      } else {
-        throw new Error("Error al realizar la petición");
-      }
-    } catch (error) {
-      console.error("Error al realizar la petición:", error);
-    }
+    router.push(`/Shop/Checkout`);
   };
 
   return (
-    <div className={styles.cart}>
-      <h2 className={styles.cartTitle}>Carrito</h2>
-      {!order && <p className={styles.emptyCart}>No hay items en el carrito</p>}
-      {order &&
-        Object.values(order.cart).map((item) => {
-          if (typeof item !== "string")
-            return (
-              <div key={item.id} className={styles.cartItem}>
-                <img
-                  src={item.imageSrc}
-                  alt={item.name}
-                  className={styles.itemImage}
-                />
-                <div className={styles.itemDetails}>
-                  <h3 className={styles.itemName}>{item.name}</h3>
-                  <p className={styles.itemQuantity}>
-                    Cantidad: {item.quantity}
-                  </p>
-                  <p className={styles.itemPrice}>
-                    Precio: ${item.price * item.quantity}
-                  </p>
-                  <button
-                    onClick={() => handleRemoveItemFromCart(item.id)}
-                    className={styles.removeButton}
-                  >
-                    Quitar
-                  </button>
-                </div>
-              </div>
-            );
-        })}
-      <p className={styles.totalPrice}>Total: ${totalPrice}</p>
-      <button onClick={handleRedirectToShop} className={styles.shopButton}>
-        Ir a Shop
-      </button>
-    </div>
+    <>
+      <Button onClick={() => setIsOpen(true)}>Carrito({totalItems})</Button>
+      <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <DrawerHeader>
+          <Text as="h2" variant="primary">
+            Carrito
+          </Text>
+        </DrawerHeader>
+        <DrawerBody>
+          {!order && <Text>No hay items en el carrito</Text>}
+          {order &&
+            Object.values(order.cart).map((item) => {
+              if (typeof item !== "string")
+                return (
+                  <div key={item.id} className={styles.cartItem}>
+                    <Image
+                      width={100}
+                      height={100}
+                      src={item.imageSrc}
+                      alt={item.name}
+                      className={styles.itemImage}
+                    />
+                    <div className={styles.itemDetails}>
+                      <Text variant="primary" as="h4">
+                        {item.name}
+                      </Text>
+                      <Text as="span">Cantidad: {item.quantity}</Text>
+                      <Text as="span">
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                          }}
+                        >
+                          <PiCurrencyEthFill size={16} />
+                          {Intl.NumberFormat("es-ES", {
+                            maximumSignificantDigits: 4,
+                            notation: "compact",
+                          }).format(item.price * item.quantity)}
+                        </span>
+                      </Text>
+                      <Text as="span">
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "0.5rem",
+                            gap: "0.25rem",
+                          }}
+                        >
+                          <PiCurrencyDollar size={16} />
+                          {Intl.NumberFormat("es-ES", {
+                            maximumSignificantDigits: 2,
+                            maximumFractionDigits: 2,
+                            roundingPriority: "morePrecision",
+                          }).format(item.price * item.quantity * price)}
+                        </span>
+                      </Text>
+                      <Button
+                        size="xs"
+                        color="danger"
+                        onClick={() => handleRemoveItemFromCart(item)}
+                      >
+                        Quitar
+                      </Button>
+                    </div>
+                  </div>
+                );
+            })}
+        </DrawerBody>
+        <DrawerActions>
+          <div className={styles.actionsContainer}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start",
+                flexDirection: "column",
+              }}
+            >
+              <p
+                className={styles.totalPrice}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                }}
+              >
+                <PiCurrencyEthFill size={16} /> {totalPrice.toPrecision(4)}
+              </p>
+              <p
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                }}
+                className={styles.totalPrice}
+              >
+                <PiCurrencyDollar size={16} />{" "}
+                {Intl.NumberFormat("es-ES", {
+                  maximumSignificantDigits: 2,
+                  maximumFractionDigits: 2,
+                  roundingPriority: "morePrecision",
+                }).format(totalPrice * price)}
+              </p>
+            </div>
+            <Button onClick={handleRedirectToCheckout} disabled={loading || !session}>
+              Pagar ({totalItems})
+            </Button>
+          </div>
+        </DrawerActions>
+      </Drawer>
+    </>
   );
 };
 

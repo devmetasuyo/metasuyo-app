@@ -2,6 +2,7 @@
 
 import styles from "./styles.module.scss";
 import { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { usePrivySession } from "@/hooks/usePrivySession";
 
 interface ModalProps extends PropsWithChildren {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface ModalProps extends PropsWithChildren {
 export function Modal({ handleModal, isOpen, children }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const { session } = usePrivySession();
 
   function closeModal() {
     handleModal(false);
@@ -46,6 +48,12 @@ export function Modal({ handleModal, isOpen, children }: ModalProps) {
   const handleClose = () => {
     if (!isClosing) {
       closeModal();
+    }
+  };
+
+  const onConfirm = (confirm: boolean) => {
+    if (confirm && session?.wallet) {
+      window.location.href = `/Perfil/${session.wallet}?showModal=true`;
     }
   };
 

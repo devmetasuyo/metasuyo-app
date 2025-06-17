@@ -1,0 +1,91 @@
+.cartItem {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.625rem;
+  margin-bottom: 0.9375rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  align-items: center;
+}
+
+.image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  padding-right: 0.625rem;
+  justify-content: space-evenly;
+}
+
+.details h4 {
+  margin: 0;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.2;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.subtotal {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.quantityBtn {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background-color: var(--gray-color);
+  color: var(--white-color);
+  cursor: pointer;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls span {
+  font-size: 0.75rem;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.remove {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

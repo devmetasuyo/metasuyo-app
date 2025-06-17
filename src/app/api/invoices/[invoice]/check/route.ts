@@ -1,6 +1,6 @@
 import { prisma } from "@/utils/prismaClient";
-import { stat } from "fs";
-const toAddress = "0xD2417A0fa4836876c75a71dfD49829353e526a3f";
+
+const toAddress = process.env.NEXT_PUBLIC_ADMIN_WALLET;
 
 export const POST = async (request: Request, params: { invoice: string }) => {
   const { invoice } = params;
@@ -33,7 +33,6 @@ export const POST = async (request: Request, params: { invoice: string }) => {
       ) => (item.precio ? total + item.precio * item.cantidad : total),
       0
     );
-    console.log(invoice);
     return await prisma.facturas.update({
       where: {
         id: checkFactura.id,

@@ -10,7 +10,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-} from "../Common";
+} from "../common";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -299,7 +299,15 @@ export default function NFTForm({ collections, userAddress }: NFTFormProps) {
   return (
     <Card style={{ maxWidth: "900px", width: "100%" }}>
       <CardHeader>
-        <h2 style={{ textAlign: "center" }}>Creación de NFT</h2>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "1.25rem",
+            fontWeight: "bold",
+          }}
+        >
+          Creación de NFT
+        </h2>
       </CardHeader>
       <CardContent>{renderFormContent()}</CardContent>
 

@@ -11,3 +11,6 @@ export { Title } from "./Title";
 export { TextBody } from "./Texts";
 export { Footer } from "./Footer";
 export { Alert } from "./Alert/Alert";
+export { Drawer, DrawerActions, DrawerBody, DrawerHeader } from "./Drawer";
+export { Text } from "./Text";
+export { Textarea } from "./Textarea";

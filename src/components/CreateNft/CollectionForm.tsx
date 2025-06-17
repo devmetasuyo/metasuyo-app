@@ -13,10 +13,10 @@ import {
   Input,
   Spinner,
   Alert,
-} from "@/components/Common";
+} from "@/components/common";
 import { useCreateCollection } from "@/hooks/useCreateCollection";
 import { uploadImage } from "@/utils/imageUpload";
-import { useFeedbackModal } from "@/components/Modals/FeedbackModal/FeedbackModal/useFeedbackModal";
+import { useFeedbackModal } from "@/components/Modals/FeedbackModal";
 
 const addressContract = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
@@ -54,18 +54,25 @@ export default function CollectionForm({}: CollectionFormProps) {
 
   useEffect(() => {
     if (isTransactionSuccess) {
-      openModal("La colección se ha creado correctamente.", false);
+      openModal({
+        title: "¡La colección se ha creado correctamente!",
+        cancelButton: "Cerrar",
+        type: "success",
+      });
       setFormSubmitted(true);
       reset();
     }
     if (transactionError) {
-      openModal(`Error en la transacción: ${transactionError.message}`, true);
+      openModal({
+        title: `Error en la transacción: ${transactionError.message}`,
+        type: "danger",
+      });
     }
     if (writeError) {
-      openModal(
-        `Error al escribir en el contrato: ${writeError.message}`,
-        true
-      );
+      openModal({
+        title: `Error al escribir en el contrato: ${writeError.message}`,
+        type: "danger",
+      });
     }
   }, [isTransactionSuccess, transactionError, writeError, openModal, reset]);
 
@@ -79,11 +86,10 @@ export default function CollectionForm({}: CollectionFormProps) {
         imageUri: imageUri,
       });
     } catch (error) {
-      console.error("Error al subir la imagen:", error);
-      openModal(
-        "Error al subir la imagen. Por favor, inténtelo de nuevo.",
-        true
-      );
+      openModal({
+        title: "Error al subir la imagen. Por favor, inténtelo de nuevo.",
+        type: "danger",
+      });
     }
   };
 
@@ -192,7 +198,15 @@ export default function CollectionForm({}: CollectionFormProps) {
   return (
     <Card style={{ maxWidth: "900px", width: "100%" }}>
       <CardHeader>
-        <h2 style={{ textAlign: "center" }}>Creación de Colección NFT</h2>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "1.25rem",
+            fontWeight: "bold",
+          }}
+        >
+          Creación de Colección NFT
+        </h2>
       </CardHeader>
       <CardContent>{renderFormContent()}</CardContent>
     </Card>

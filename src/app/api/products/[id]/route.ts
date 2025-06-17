@@ -9,9 +9,9 @@ export const GET = async (
 
   const product = await prisma.productos.findUnique({
     where: {
-      id: Number(id),
+      id: id,
     },
   });
 
-  return Response.json({ product });
+  return Response.json({ product, status: "success" });
 };
