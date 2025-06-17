@@ -1,0 +1,179 @@
+.container {
+  padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.searchSelect {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--dark-color);
+  color: var(--white-color);
+  min-width: 180px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--dark-color);
+  color: var(--white-color);
+}
+
+.invoicesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.listHeader {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr;
+  padding: 0 1rem;
+  color: var(--gray-color);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.statusHeader {
+  text-align: right;
+}
+
+.invoiceCard {
+  background-color: var(--dark-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.invoiceCard:hover {
+  transform: translateX(4px);
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.invoiceId {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.clientName {
+  color: var(--white-color);
+  font-size: 0.95rem;
+}
+
+.wallet {
+  color: var(--gray-color);
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.date {
+  color: var(--gray-color);
+  font-size: 0.85rem;
+}
+
+.total {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.status {
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  width: fit-content;
+  margin-left: auto;
+
+  color: white !important;
+}
+
+.pendiente {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.pagada {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.cancelada {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.loading {
+  text-align: center;
+  color: var(--gray-color);
+  padding: 2rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.sunatBadge {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .searchContainer {
+    flex-direction: column;
+  }
+
+  .listHeader {
+    display: none;
+  }
+
+  .invoiceCard {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .status {
+    margin-left: 0;
+    color: white !important;
+  }
+
+  .details {
+    text-align: left;
+  }
+}

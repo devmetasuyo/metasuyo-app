@@ -1,0 +1,120 @@
+@import "../../../styles/variables.scss";
+.user-dropdown {
+  position: relative;
+
+  .dropdown-toggle,
+  .connect-button {
+    background-color: $primary-bg-color;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $primary-hover-color;
+    }
+  }
+
+  .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    min-width: 250px; // Aumentamos el ancho mínimo para acomodar la dirección de la wallet
+
+    @media (max-width: 768px) {
+      right: auto;
+      left: 0;
+    }
+
+    .wallet-info {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 0.5rem;
+
+      span {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        margin: 0;
+        word-break: break-all;
+        font-size: 0.8rem;
+      }
+
+      .copy-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        background-color: #f0f2f5;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #e4e6e9;
+        }
+      }
+    }
+
+    .chain-info {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 0.5rem;
+
+      span {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        margin: 0;
+        font-weight: bold;
+      }
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #333;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f0f2f5;
+      }
+    }
+  }
+}

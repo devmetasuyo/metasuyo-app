@@ -1,0 +1,1 @@
+export { Degradado } from "./Degradado";

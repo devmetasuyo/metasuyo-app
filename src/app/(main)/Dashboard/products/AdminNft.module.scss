@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.5rem;
+
+  & > *:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  & > *:last-child {
+    margin-bottom: 1rem;
+  }
+}
+
+.nftList {
+  display: grid; /* Cambiar a grid para columnas */
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+  gap: 20px; /* Espacio entre los elementos */
+  width: 100%;
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+.cardTitle {
+  color: white;
+  font-weight: bold;
+  font-size: 1.75rem;
+}
+.statsContainer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}

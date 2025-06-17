@@ -1,0 +1,38 @@
+// src/app/(main)/Shop/Cart.module.scss
+
+.cartItem {
+  color: white !important;
+  display: flex;
+  padding: var(--spacing-unit) calc(var(--spacing-unit) / 2);
+  background-color: var(--gray-color-20);
+  gap: var(--spacing-unit);
+  border-radius: var(--border-radius);
+  margin-bottom: 0.5rem;
+}
+
+.itemImage {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.itemDetails {
+  flex-grow: 1;
+  & > *:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.totalPrice {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.actionsContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}

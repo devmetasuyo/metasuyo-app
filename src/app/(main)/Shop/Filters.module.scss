@@ -1,0 +1,27 @@
+@import "../../../styles/variables.scss";
+
+.filterGroup {
+  margin-bottom: 15px;
+
+  label {
+    font-weight: 600; // Hacer la etiqueta más destacada
+    color: $primary-color; // Usar color primario
+  }
+
+  select {
+    width: 100%; // Hacer que el select ocupe todo el ancho
+    padding: 8px; // Ajustar el espaciado interno
+    border-radius: 4px; // Bordes redondeados
+    border: 1px solid $gray-color; // Borde
+    background-color: white; // Color de fondo
+    font-size: 0.9rem; // Tamaño de fuente más pequeño
+    margin-top: 5px; // Espaciado superior
+  }
+}
+
+.filterTitle {
+  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: var(--spacing-unit);
+  color: $primary-color;
+}

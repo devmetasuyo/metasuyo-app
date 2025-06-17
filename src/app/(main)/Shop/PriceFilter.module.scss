@@ -1,0 +1,47 @@
+@import "../../../styles/variables.scss";
+
+.priceFilter {
+  margin-bottom: 20px;
+
+  h4 {
+    margin-bottom: 10px;
+    color: $primary-color;
+  }
+
+  .inputGroup {
+    margin-bottom: 15px;
+
+    label {
+      display: block; // Cambiar a block para que esté encima del input
+      margin-bottom: 5px;
+      color: $primary-color;
+    }
+
+    .inputWithLabel {
+      display: flex;
+      align-items: center;
+
+      input[type="number"] {
+        width: 100%;
+        margin-right: 5px;
+        border: 1px solid $gray-color;
+        border-radius: 4px;
+        padding: 5px;
+      }
+
+      span {
+        margin-left: 5px; // Espaciado entre el input y la etiqueta ETH
+        color: $primary-color; // Color de la etiqueta ETH
+      }
+    }
+
+    input[type="range"] {
+      width: 100%; // Asegurarse de que el slider ocupe el 100%
+      padding: 0;
+      border-radius: 4px;
+      border: 1px solid $gray-color;
+      background-color: white;
+      margin-top: 5px;
+    }
+  }
+}

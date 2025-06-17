@@ -1,0 +1,65 @@
+@import "../../../styles/_variables.scss";
+
+.text {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: $primary-text-color;
+
+  &.h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  &.h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  &.h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  &.h4 {
+    font-size: 1.125rem; // Un poco más grande que el texto regular
+    font-weight: bold;
+  }
+
+  &.h5 {
+    font-size: 1.0625rem; // Un poco más pequeño que el h4
+    font-weight: bold;
+  }
+
+  &.p {
+    font-size: 1rem; // Texto regular
+  }
+
+  &.span {
+    font-size: 0.875rem; // Un poco más pequeño que el texto regular
+  }
+
+  &.primary {
+    color: $primary-color;
+  }
+
+  &.secondary {
+    color: $secondary-color;
+  }
+
+  &.success {
+    color: $success-color;
+  }
+
+  &.info {
+    color: $info-color;
+  }
+
+  &.warning {
+    color: $warning-color;
+  }
+
+  &.danger {
+    color: $danger-color;
+  }
+}

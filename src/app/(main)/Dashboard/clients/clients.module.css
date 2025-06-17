@@ -1,0 +1,99 @@
+.container {
+  padding: 0 1.5rem;
+}
+
+.container > *:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.container > *:last-child {
+  margin-bottom: 1rem;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.searchSelect {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  min-width: 150px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.clientList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.clientCard {
+  background-color: var(--dark-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.clientInfo {
+  margin-bottom: 1rem;
+  overflow: auto;
+}
+
+.clientName {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.clientDetails {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  color: var(--gray-color);
+  text-wrap: wrap;
+}
+
+.clientActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.editButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.editButton {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+.editButton:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.deleteButton {
+  background-color: var(--danger-color);
+  color: var(--white-color);
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
+}

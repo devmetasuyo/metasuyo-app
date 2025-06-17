@@ -1,0 +1,119 @@
+.container {
+  width: 100%;
+  padding: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 524px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.card {
+  background: var(--light-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px var(--gray-color-10);
+  border: 1px solid var(--gray-color-20);
+  transition: box-shadow 0.3s ease;
+  max-width: 275px;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px var(--gray-color-20);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.imageContainer:hover .image {
+  transform: scale(1.05);
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.imageContainer:hover .imageOverlay {
+  opacity: 0.2;
+}
+
+.cardContent {
+  padding: 1rem;
+}
+
+.nftTitle {
+  font-weight: 600;
+  color: var(--light-text-color);
+  margin-bottom: 0.5rem;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.year {
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-lightened-60);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+}
+
+.id {
+  font-size: 0.75rem;
+  color: var(--gray-color);
+}
+
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16rem;
+  color: var(--gray-color);
+}

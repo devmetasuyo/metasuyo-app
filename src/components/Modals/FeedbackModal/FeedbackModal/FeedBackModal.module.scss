@@ -1,0 +1,36 @@
+.feedbackModal {
+  background: #fff;
+  padding: 1rem 2rem;
+  text-align: center;
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .icon {
+    margin: 0 auto 1rem auto;
+    text-align: center;
+    font-size: 64px;
+
+    &.success {
+      color: var(--success-color);
+    }
+    &.warning {
+      color: var(--warning-color);
+    }
+    &.danger {
+      color: var(--danger-color);
+    }
+  }
+  .text {
+    text-align: center;
+    color: #222;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+}

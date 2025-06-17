@@ -1,0 +1,109 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.clientInfo {
+  background-color: var(--dark-color);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.name {
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.details {
+  display: grid;
+  gap: 1rem;
+}
+
+.details p {
+  color: var(--gray-color);
+  font-size: 1.1rem;
+}
+
+.details strong {
+  color: var(--white-color);
+}
+
+.subtitle {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.invoicesList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.invoiceCard {
+  background-color: var(--dark-color);
+  padding: 1.5rem;
+  border-radius: 1rem;
+}
+
+.invoiceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.invoiceId {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.status {
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pendiente {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.pagada {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.cancelada {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.invoiceDetails {
+  margin-bottom: 1rem;
+  color: var(--gray-color);
+}
+
+.productsList {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  color: var(--gray-color);
+}
+
+.noInvoices {
+  text-align: center;
+  color: var(--gray-color);
+  padding: 2rem;
+  background-color: var(--dark-color);
+  border-radius: 1rem;
+} 

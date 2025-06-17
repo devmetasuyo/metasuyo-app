@@ -1,0 +1,47 @@
+.titleSlider {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+.imgSlider {
+  width: 97%;
+  height: 200px;
+  object-fit: cover;
+  margin-top: 5px;
+  border-radius: 10px;
+}
+
+.metasuyoSlider {
+  min-width: 200px;
+  max-width: 200px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  border-radius: 10px;
+  border: var(--primary-color) 3px solid;
+}
+
+.eyeButton {
+  background-color: var(--light-color);
+  margin-left: auto;
+  right: 0.625rem;
+  top: 0.375rem;
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  color: var(--light-text-color);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--light-hover-color);
+  }
+}
