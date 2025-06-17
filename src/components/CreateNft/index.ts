@@ -1,1 +1,0 @@
-export { CreateNFT } from "./CreateNFT";

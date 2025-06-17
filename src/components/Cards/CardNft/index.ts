@@ -1,1 +1,0 @@
-export { CardNft } from "./CardNft";

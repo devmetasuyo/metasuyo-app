@@ -1,1 +1,0 @@
-export { CardNftAdmin } from "./CardNftAdmin";

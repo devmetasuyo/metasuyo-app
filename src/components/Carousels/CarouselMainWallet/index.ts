@@ -1,1 +1,0 @@
-export { CarouselMainWallet } from "./CarouselMainWallet";
