@@ -10,3 +10,4 @@ export * from "./Icons";
 export * from "./Cards";
 export * from "./TransactionWrapper/TransactionWrapper";
 export * from "./Shared";
+export * from "./WalletConnector";

@@ -13,6 +13,11 @@ export const useGetCollectionNames = (contractAddress: `0x${string}`) => {
     address: contractAddress,
     abi: MetasuyoABI,
     functionName: "getCollectionNames",
+    query: {
+      enabled: !!contractAddress,
+      retry: 3,
+      retryDelay: 1000,
+    }
   });
 
   const names =

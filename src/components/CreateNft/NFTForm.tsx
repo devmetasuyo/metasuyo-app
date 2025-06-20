@@ -33,9 +33,10 @@ const addressWallet = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 interface NFTFormProps {
   collections: any[];
   userAddress: `0x${string}` | undefined;
+  isWalletConnected?: boolean;
 }
 
-export default function NFTForm({ collections, userAddress }: NFTFormProps) {
+export default function NFTForm({ collections, userAddress, isWalletConnected = false }: NFTFormProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [createdNFT, setCreatedNFT] = useState<{
@@ -104,6 +105,15 @@ export default function NFTForm({ collections, userAddress }: NFTFormProps) {
   const onSubmit = async (data: NftFormData) => {
     setFormSubmitted(false);
     setAlert({ type: null, message: "" });
+    
+    if (!isWalletConnected) {
+      setAlert({
+        type: "error",
+        message: "Por favor conecta tu wallet para poder crear NFTs"
+      });
+      return;
+    }
+    
     try {
       const imageHash = await uploadImageToPinata(data.image[0], data.title);
       const metadataHash = await uploadMetadataToPinata(

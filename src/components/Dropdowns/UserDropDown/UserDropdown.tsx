@@ -99,7 +99,10 @@ export const UserDropdown: React.FC = () => {
               Conectar a {chain.name}
             </button>
           ))}
-          <Button onClick={() => { disconnect(); logout(); }}>Salir</Button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <Button onClick={() => disconnect()}>Desconectar Wallet</Button>
+            <Button onClick={() => logout()}>Cerrar Sesión Privy</Button>
+          </div>
         </div>
       )}
     </div>

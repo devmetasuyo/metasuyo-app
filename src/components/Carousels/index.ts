@@ -1,3 +1,3 @@
 export { Carousel } from "./Carousel";
-export { CarouselMainWallet } from "./CarouselMainWallet";
+export { CarouselMainWallet, CarouselMainWalletSafe } from "./CarouselMainWallet";
 export { CarouselMainWalletFull } from "./CarouselMainWalletFull";

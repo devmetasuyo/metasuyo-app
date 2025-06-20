@@ -1,6 +1,6 @@
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { base, baseSepolia } from "wagmi/chains";
-import { coinbaseWallet } from "wagmi/connectors";
+import { coinbaseWallet, metaMask } from "wagmi/connectors";
 import { PrivyProvider } from '@privy-io/react-auth';
 
 export function getConfig() {
@@ -8,11 +8,16 @@ export function getConfig() {
     chains: [baseSepolia, base],
     multiInjectedProviderDiscovery: false,
     connectors: [
+      metaMask(),
       coinbaseWallet({
         appName: "Metasuyo",
         preference: "all",
         version: "4",
       }),
+      // Temporalmente deshabilitado WalletConnect para evitar errores de custom elements
+      // walletConnect({
+      //   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "default",
+      // }),
     ],
     ssr: true,
     storage: createStorage({

@@ -1,7 +1,7 @@
 "use client";
 
 import { Banner, Title, Degradado, TextBody } from "@/components";
-import { CarouselMainWallet } from "@/components";
+import { CarouselMainWalletSafe } from "@/components";
 import textos from "@/utils/text.json";
 import { usePrivySession } from "@/hooks/usePrivySession";
 
@@ -19,7 +19,7 @@ function Page() {
       <Degradado />
       <TextBody>{textos.landing.text_1}</TextBody>
       <Title title={textos.landing.title} />
-      <CarouselMainWallet />
+      <CarouselMainWalletSafe />
     </>
   );
 }
