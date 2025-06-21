@@ -2,6 +2,7 @@ import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import { base, baseSepolia } from "wagmi/chains";
 import { coinbaseWallet, metaMask } from "wagmi/connectors";
 import { PrivyProvider } from '@privy-io/react-auth';
+import { getWorkingRpcUrl } from "@/utils/rpcConfig";
 
 export function getConfig() {
   return createConfig({
@@ -24,8 +25,8 @@ export function getConfig() {
       storage: cookieStorage,
     }),
     transports: {
-      [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
-      [base.id]: http(),
+      [baseSepolia.id]: http(getWorkingRpcUrl(baseSepolia.id)),
+      [base.id]: http(getWorkingRpcUrl(base.id)),
     },
     // Configuración adicional para mejorar la estabilidad
     batch: {

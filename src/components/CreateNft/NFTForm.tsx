@@ -106,6 +106,7 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
     setFormSubmitted(false);
     setAlert({ type: null, message: "" });
     
+    // Validaciones mejoradas
     if (!isWalletConnected) {
       setAlert({
         type: "error",
@@ -113,9 +114,44 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
       });
       return;
     }
+
+    if (!userAddress) {
+      setAlert({
+        type: "error",
+        message: "Dirección de wallet no disponible. Por favor reconecta tu wallet."
+      });
+      return;
+    }
+
+    if (!collections || collections.length === 0) {
+      setAlert({
+        type: "error",
+        message: "No hay colecciones disponibles. Por favor recarga la página."
+      });
+      return;
+    }
+
+    if (!collections[data.category]) {
+      setAlert({
+        type: "error",
+        message: "Colección seleccionada no válida."
+      });
+      return;
+    }
     
     try {
+      setAlert({
+        type: "info",
+        message: "Subiendo imagen a IPFS..."
+      });
+
       const imageHash = await uploadImageToPinata(data.image[0], data.title);
+      
+      setAlert({
+        type: "info",
+        message: "Subiendo metadatos a IPFS..."
+      });
+
       const metadataHash = await uploadMetadataToPinata(
         data.title,
         data.description,
@@ -123,6 +159,11 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
         data.rarity,
         collections[data.category].id
       );
+
+      setAlert({
+        type: "info",
+        message: "Creando NFT en blockchain..."
+      });
 
       executeCreateNFT({
         to: userAddress as `0x${string}`,
@@ -144,7 +185,10 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
       });
     } catch (error) {
       console.error("Error al subir el NFT:", error);
-      setAlert({ type: "error", message: `Error al subir el NFT: ${error}` });
+      setAlert({ 
+        type: "error", 
+        message: `Error al crear NFT: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+      });
     }
   };
 
