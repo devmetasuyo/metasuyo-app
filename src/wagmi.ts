@@ -24,9 +24,14 @@ export function getConfig() {
       storage: cookieStorage,
     }),
     transports: {
-      [baseSepolia.id]: http(),
+      [baseSepolia.id]: http(process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org'),
       [base.id]: http(),
     },
+    // Configuración adicional para mejorar la estabilidad
+    batch: {
+      multicall: true,
+    },
+    pollingInterval: 4000,
   });
 }
 

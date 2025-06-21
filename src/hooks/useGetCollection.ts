@@ -14,6 +14,15 @@ export const useGetCollection = (
     abi: MetasuyoABI,
     functionName: "getCollectionData",
     args: [BigInt(collectionId)],
+    query: {
+      enabled: !!contractAddress && collectionId >= 0,
+      retry: 2,
+      retryDelay: 1000,
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+    }
   });
 
   return {

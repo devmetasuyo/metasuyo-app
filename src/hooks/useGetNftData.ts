@@ -12,6 +12,15 @@ export const useGetNftData = (
     abi: MetasuyoABI,
     functionName: "nftData",
     args: [BigInt(tokenId)],
+    query: {
+      enabled: !!contractAddress && tokenId >= 0,
+      retry: 2,
+      retryDelay: 1000,
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+    }
   });
 
   return {

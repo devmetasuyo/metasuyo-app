@@ -1,1 +1,1 @@
-export { CarouselMainWalletFull } from "./CarouselMainWithWalletFull";
+export { CarouselMainWalletFullSafe as CarouselMainWalletFull } from "./CarouselMainWalletFullSafe";

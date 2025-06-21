@@ -1,62 +1,65 @@
 "use client";
 
 import { useGetCollection } from "@/hooks/useGetCollection";
-import { useGetNftsByCollection } from "@/hooks/useGetNftsByCollection";
 import { PropsWithChildren } from "react";
-
 import Image from "next/image";
-
 import styles from "./CarouselWrapperData.module.scss";
-import { Spinner, Title } from "@/components/common";
+import { Spinner, Title, Alert } from "@/components/common";
 
-interface CarouselWrapperDataProps extends PropsWithChildren {
+interface CarouselWrapperDataSafeProps extends PropsWithChildren {
   collectionId: number;
   address: `0x${string}`;
 }
 
-export const CarouselWrapperData = ({
+export const CarouselWrapperDataSafe = ({
   address,
   children,
   collectionId,
-}: CarouselWrapperDataProps) => {
-  const { data, isLoading: isLoadingCollection } = useGetCollection(address, collectionId);
-  const { data: nftsData, isLoading: isLoadingNfts } = useGetNftsByCollection(address, collectionId);
+}: CarouselWrapperDataSafeProps) => {
+  const { data, isLoading, isError, error } = useGetCollection(address, collectionId);
 
-  if (isLoadingCollection || isLoadingNfts)
+  if (isLoading)
     return (
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100px",
+          height: "300px",
         }}
       >
         <Spinner />
       </div>
     );
 
-  // Si no hay datos de colección, no renderizar nada
+  if (isError) {
+    console.warn(`Error loading collection data for ID ${collectionId}:`, error);
+    return (
+      <div style={{ padding: '2rem' }}>
+        <Alert type="info">
+          <div style={{ textAlign: 'center' }}>
+            <p>No se pueden cargar los datos de esta colección.</p>
+          </div>
+        </Alert>
+      </div>
+    );
+  }
+
   if (!data) {
-    return null;
-  }
-
-  // Si no hay NFTs, no renderizar nada
-  if (!nftsData || nftsData.length === 0) {
-    return null;
-  }
-
-  // Filtrar NFTs válidos (con nombres)
-  const validNfts = nftsData.filter(nft => nft.name.trim() !== "");
-  
-  // Si no hay NFTs válidos, no renderizar nada
-  if (validNfts.length === 0) {
-    return null;
+    return (
+      <div style={{ padding: '2rem' }}>
+        <Alert type="info">
+          <div style={{ textAlign: 'center' }}>
+            <p>Colección no encontrada.</p>
+          </div>
+        </Alert>
+      </div>
+    );
   }
 
   return (
     <div style={{ marginTop: "2rem" }}>
-      <Title title={data?.name ?? "Sin titulo"} />
+      <Title title={data.name || "Sin título"} />
       <p
         style={{
           textAlign: "center",
@@ -64,7 +67,7 @@ export const CarouselWrapperData = ({
           paddingBottom: "20px",
         }}
       >
-        {data?.description}
+        {data.description || "Sin descripción"}
       </p>
       <div
         style={{
@@ -81,7 +84,7 @@ export const CarouselWrapperData = ({
             width={300}
             height={400}
             alt="Imagen de la colección"
-            src={data?.imgUrl ?? "/icon.png"}
+            src={data.imgUrl || "/icon.png"}
             onError={(e) => {
               e.currentTarget.src = "/icon.png";
             }}
@@ -100,4 +103,4 @@ export const CarouselWrapperData = ({
       </div>
     </div>
   );
-};
+}; 

@@ -1,7 +1,8 @@
 import { CarouselCard } from "@/components/Cards";
 import { useGetNftData } from "@/hooks/useGetNftData";
+import { Alert } from "@/components/common";
 
-export const CarouselMainNft = ({ id }: { id: number }) => {
+export const CarouselMainNftSafe = ({ id }: { id: number }) => {
   const contractAddress = process.env
     .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
   const {
@@ -14,11 +15,25 @@ export const CarouselMainNft = ({ id }: { id: number }) => {
   if (isLoading) return <div style={{ color: 'white', padding: '1rem' }}>Cargando NFT...</div>;
   
   if (isError) {
-    console.warn(`Error cargando datos del NFT ${id}:`, error);
-    return null; // No mostrar nada si hay error
+    console.warn(`Error loading NFT data for ID ${id}:`, error);
+    return (
+      <div style={{ padding: '1rem', minWidth: '200px' }}>
+        <Alert type="info">
+          <p style={{ fontSize: '0.8rem' }}>Error cargando NFT #{id}</p>
+        </Alert>
+      </div>
+    );
   }
 
-  if (!nft) return null; // No mostrar nada si no hay datos
+  if (!nft) {
+    return (
+      <div style={{ padding: '1rem', minWidth: '200px' }}>
+        <Alert type="info">
+          <p style={{ fontSize: '0.8rem' }}>NFT #{id} no encontrado</p>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <CarouselCard
@@ -37,4 +52,4 @@ export const CarouselMainNft = ({ id }: { id: number }) => {
       }}
     />
   );
-};
+}; 

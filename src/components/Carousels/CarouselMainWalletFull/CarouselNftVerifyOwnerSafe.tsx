@@ -1,5 +1,5 @@
 import { useGetNftOwner } from "@/hooks/useGetNftOwner";
-import { Spinner } from "../../common";
+import { Spinner, Alert } from "../../common";
 
 interface Props extends React.PropsWithChildren {
   id: number;
@@ -7,7 +7,7 @@ interface Props extends React.PropsWithChildren {
   onVerify?: (owner: string) => void;
 }
 
-export const CarouselNftVerifyOwner = ({
+export const CarouselNftVerifyOwnerSafe = ({
   id,
   children,
   addressCheck,
@@ -25,19 +25,20 @@ export const CarouselNftVerifyOwner = ({
 
   if (isLoading) return <Spinner />;
   
-  // En caso de error, mostrar el NFT para no bloquear la visualización
   if (isError) {
-    console.warn(`Error verificando propietario del NFT ${id}:`, error);
+    console.warn(`Error verifying owner for NFT ${id}:`, error);
+    // En caso de error, mostrar el NFT de todas formas para no bloquear la visualización
     return <>{children}</>;
   }
 
   onVerify && onVerify(owner!);
 
-  // Si no hay addressCheck o está vacío, mostrar todos los NFTs
-  // Si hay addressCheck, verificar que coincida con el propietario
+  // Si addressCheck está vacío, mostrar todos los NFTs
+  // Si coincide con el owner, mostrar el NFT
+  // En caso de duda, mostrar el NFT para no bloquear la visualización
   const shouldShow = !addressCheck || 
                      addressCheck.trim() === "" || 
                      addressCheck.trim().toLowerCase() === owner?.trim().toLowerCase();
 
   return shouldShow ? <>{children}</> : null;
-};
+}; 

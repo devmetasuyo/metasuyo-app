@@ -17,6 +17,11 @@ export const useGetCollectionNames = (contractAddress: `0x${string}`) => {
       enabled: !!contractAddress,
       retry: 3,
       retryDelay: 1000,
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      // Permitir lectura sin conexión de wallet
+      refetchOnMount: true,
+      refetchOnReconnect: true,
     }
   });
 

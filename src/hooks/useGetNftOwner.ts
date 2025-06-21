@@ -7,6 +7,15 @@ export const useGetNftOwner = (address: `0x${string}`, tokenId: number) => {
     abi: MetasuyoABI,
     functionName: "ownerOf",
     args: [BigInt(tokenId)],
+    query: {
+      enabled: !!address && tokenId >= 0,
+      retry: 2,
+      retryDelay: 1000,
+      staleTime: 30000,
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+    }
   });
 
   return {
