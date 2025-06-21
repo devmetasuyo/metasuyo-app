@@ -8,7 +8,7 @@ import { prisma } from "@/utils/prismaClient";
 import { cookies } from "next/headers";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
+const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET2 as `0x${string}`;
 
 export const GET = async () => {
   try {

@@ -24,7 +24,7 @@ export function Navbar({ children, userLinks }: Props) {
 
   const menuRef = useRef<HTMLUListElement>(null);
 
-  const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET?.toLowerCase();
+  const ADMIN_WALLET = process.env.NEXT_PUBLIC_ADMIN_WALLET2?.toLowerCase();
 
   const isAdmin = session?.wallet?.toLowerCase() === ADMIN_WALLET;
 
