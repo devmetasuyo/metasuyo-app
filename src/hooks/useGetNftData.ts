@@ -2,6 +2,7 @@ import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi"; // Asegúrate d
 import { Nft } from "@/types";
 import { ResponseByContract } from "@/types/responseByContract";
 import { useReadContract } from "wagmi";
+import { privyConfig } from "@/privy";
 
 export const useGetNftData = (
   contractAddress: `0x${string}`,
@@ -12,6 +13,7 @@ export const useGetNftData = (
     abi: MetasuyoABI,
     functionName: "nftData",
     args: [BigInt(tokenId)],
+    chainId: privyConfig.defaultChain?.id,
     query: {
       enabled: !!contractAddress && tokenId >= 0,
       retry: 2,

@@ -1,4 +1,5 @@
 import { useReadContract } from "wagmi";
+import { privyConfig } from "@/privy";
 import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi";
 export const useGetCollection = (
   contractAddress: `0x${string}`,
@@ -14,6 +15,7 @@ export const useGetCollection = (
     abi: MetasuyoABI,
     functionName: "getCollectionData",
     args: [BigInt(collectionId)],
+    chainId: privyConfig.defaultChain?.id,
     query: {
       enabled: !!contractAddress && collectionId >= 0,
       retry: 2,

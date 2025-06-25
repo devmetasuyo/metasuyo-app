@@ -1,4 +1,5 @@
 import { useReadContract } from "wagmi";
+import { privyConfig } from "@/privy";
 import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi"; // Asegúrate de tener el ABI del contrato
 
 export const useGetNftOwner = (address: `0x${string}`, tokenId: number) => {
@@ -7,6 +8,7 @@ export const useGetNftOwner = (address: `0x${string}`, tokenId: number) => {
     abi: MetasuyoABI,
     functionName: "ownerOf",
     args: [BigInt(tokenId)],
+    chainId: privyConfig.defaultChain?.id,
     query: {
       enabled: !!address && tokenId >= 0,
       retry: 2,

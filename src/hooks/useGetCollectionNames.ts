@@ -1,4 +1,5 @@
 import { useReadContract } from "wagmi";
+import { privyConfig } from "@/privy";
 import { MetasuyoAbi as MetasuyoABI } from "../abis/MetasuyoAbi"; // Asegúrate de tener el ABI del contrato
 
 // Obtener los nombres de las colecciones
@@ -13,6 +14,7 @@ export const useGetCollectionNames = (contractAddress: `0x${string}`) => {
     address: contractAddress,
     abi: MetasuyoABI,
     functionName: "getCollectionNames",
+    chainId: privyConfig.defaultChain?.id,
     query: {
       enabled: !!contractAddress,
       retry: 3,

@@ -1,4 +1,5 @@
 import { useReadContract } from "wagmi";
+import { privyConfig } from "@/privy";
 import { MetasuyoAbi as MetasuyoABI } from "@/abis/MetasuyoAbi"; // Asegúrate de tener el ABI del contrato
 
 export const useGetNftsByCollection = (
@@ -15,6 +16,7 @@ export const useGetNftsByCollection = (
     abi: MetasuyoABI,
     functionName: "getNFTsInCollection",
     args: [BigInt(collectionId)],
+    chainId: privyConfig.defaultChain?.id,
     query: {
       enabled: !!contractAddress && collectionId >= 0,
       retry: 2,

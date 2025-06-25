@@ -28,7 +28,7 @@ export const CarouselMainWalletFullSafe = () => {
           <div style={{ textAlign: 'center' }}>
             <p>No se pueden cargar las colecciones en este momento.</p>
             <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-              Verifica tu conexión de wallet para acceder al marketplace completo.
+              Verifica tu conexión de wallet o Red blockchain.
             </p>
           </div>
         </Alert>
