@@ -65,10 +65,15 @@ export default function Page() {
     if (!client) {
       openModal({
         type: "warning",
-        title: "Error",
-        message: "Debe seleccionar un cliente",
+        title: "Cliente Requerido",
+        message: "Debe seleccionar un cliente antes de crear la factura. Use el buscador para encontrar y seleccionar un cliente.",
         cancelButton: undefined,
       });
+      // Hacer scroll hacia el selector de cliente
+      const clientSection = document.querySelector('.client-selection-section');
+      if (clientSection) {
+        clientSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -249,7 +254,41 @@ export default function Page() {
         />
       </main>
       <aside className="cart-sidebar">
-        <h3>Cliente: {client?.name || "No seleccionado"}</h3>
+        <div 
+          className="client-selection-section"
+          style={{ 
+            padding: "1rem", 
+            backgroundColor: client ? "#2d5a27" : "#5a2d27", 
+            borderRadius: "8px", 
+            marginBottom: "1rem",
+            border: client ? "2px solid #4CAF50" : "2px solid #f44336",
+            boxShadow: !client ? "0 0 10px rgba(244, 67, 54, 0.3)" : "0 0 10px rgba(76, 175, 80, 0.3)",
+            transition: "all 0.3s ease"
+          }}>
+          <h3 style={{ margin: "0 0 0.5rem 0", color: "white", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            {client ? (
+              <>
+                <span style={{ color: "#4CAF50", fontSize: "18px" }}>✅</span>
+                <span>Cliente: {client.name}</span>
+              </>
+            ) : (
+              <>
+                <span style={{ color: "#f44336", fontSize: "18px" }}>⚠️</span>
+                <span style={{ color: "#ffcccb" }}>Cliente requerido</span>
+              </>
+            )}
+          </h3>
+          {!client && (
+            <p style={{ margin: 0, fontSize: "14px", color: "#ffcccb" }}>
+              ⚡ Busca y selecciona un cliente para continuar
+            </p>
+          )}
+          {client && (
+            <p style={{ margin: 0, fontSize: "12px", color: "#c8e6c9" }}>
+              Cliente seleccionado correctamente
+            </p>
+          )}
+        </div>
         <ClientSearch
           onSelectClient={(c: Client) => {
             console.log("Cliente seleccionado:", c);
@@ -337,13 +376,18 @@ export default function Page() {
               console.log("🔴 Botón clickeado!");
               handleSendInvoice();
             }}
-            disabled={isProcessing}
+            disabled={isProcessing || !client || Object.keys(cart).length === 0}
             style={{
-              opacity: isProcessing ? 0.7 : 1,
-              cursor: isProcessing ? "not-allowed" : "pointer"
+              opacity: (isProcessing || !client || Object.keys(cart).length === 0) ? 0.5 : 1,
+              cursor: (isProcessing || !client || Object.keys(cart).length === 0) ? "not-allowed" : "pointer",
+              backgroundColor: (!client || Object.keys(cart).length === 0) ? "#666" : "",
+              transition: "all 0.3s ease"
             }}
           >
-            {isProcessing ? "Procesando..." : "Crear Factura"}
+            {isProcessing ? "Procesando..." : 
+             !client ? "Seleccionar Cliente" :
+             Object.keys(cart).length === 0 ? "Agregar Productos" :
+             "Crear Factura"}
           </button>
         </div>
       </aside>

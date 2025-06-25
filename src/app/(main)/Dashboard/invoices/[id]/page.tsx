@@ -5,7 +5,6 @@ import { Banner, Degradado, Title } from "@/components";
 import styles from "./invoiceDetail.module.css";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/common/Button/Button";
-import { PiCurrencyEthFill } from "react-icons/pi";
 
 type Invoice = {
   id: string;
@@ -127,7 +126,7 @@ export default function InvoiceDetailPage() {
             </div>
             <div className={styles.total}>
               <span>Total</span>
-              <h3>${invoice.total}</h3>
+              <h3>${invoice.total.toFixed(2)} USD</h3>
             </div>
           </div>
 
@@ -159,33 +158,36 @@ export default function InvoiceDetailPage() {
                 <span>Precio</span>
                 <span>Subtotal</span>
               </div>
-              {invoice.productos.map((producto, index) => (
-                <div key={index} className={styles.tableRow}>
-                  <span>{producto.nombre}</span>
-                  <span>{producto.cantidad}</span>
-                  <span
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      color: "white",
-                    }}
-                  >
-                    <PiCurrencyEthFill size={16} /> {producto.precio}
-                  </span>
-                  <span
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      color: "white",
-                    }}
-                  >
-                    <PiCurrencyEthFill size={16} />
-                    {producto.cantidad * producto.precio}
-                  </span>
-                </div>
-              ))}
+              {invoice.productos.map((producto, index) => {
+                // Calculate unit price from subtotal and quantity
+                const unitPrice = producto.precio / producto.cantidad;
+                return (
+                  <div key={index} className={styles.tableRow}>
+                    <span>{producto.nombre}</span>
+                    <span>{producto.cantidad}</span>
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        color: "white",
+                      }}
+                    >
+                      ${unitPrice.toFixed(2)} USD
+                    </span>
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        color: "white",
+                      }}
+                    >
+                      ${producto.precio.toFixed(2)} USD
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

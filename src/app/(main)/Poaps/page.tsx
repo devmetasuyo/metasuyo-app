@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { usePrivySession } from "@/hooks/usePrivySession";
 import { ButtonSignIn } from "@/components/Buttons/ButtonSigin/ButtonSignIn";
 import { ModalClaimed } from "./modalClaimed";
 import { getPoapHashes, addPoapHashes, usePoapHash, removePoapHash } from "@/utils/poapHashes";
 import QRCode from "react-qr-code";
-import { usePrivySession } from "@/hooks/usePrivySession";
 import { useFeedbackModal } from "@/components/Modals/FeedbackModal";
 import { Modal } from "@/components";
 type PoapData = {
@@ -22,11 +21,10 @@ type PoapData = {
 };
 
 export default function PoapsPage() {
-  const { address } = useAccount();
-  const { session } = usePrivySession();
+  const { session, loading } = usePrivySession();
   const { openModal } = useFeedbackModal();
   const [poapData, setPoapData] = useState<PoapData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingPoap, setLoadingPoap] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [claimedData, setClaimedData] = useState<{ tokenId: string; wallet: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +37,7 @@ export default function PoapsPage() {
   useEffect(() => {
     async function fetchAndStoreHashes() {
       if (getPoapHashes().length === 0) {
-        setLoading(true);
+        setLoadingPoap(true);
         try {
           const res = await fetch("/api/poap/hashes");
           const data = await res.json();
@@ -52,7 +50,7 @@ export default function PoapsPage() {
         } catch (err: any) {
           setError("Error al obtener los hashes: " + err.message);
         }
-        setLoading(false);
+        setLoadingPoap(false);
       } else {
         setCurrentHash(usePoapHash());
       }
@@ -70,7 +68,7 @@ export default function PoapsPage() {
         setError("No se configuró el POAP a reclamar.");
         return;
       }
-      setLoading(true);
+      setLoadingPoap(true);
       try {
         const res = await fetch(`/api/poap/info?qr_hash=${currentHash}`);
         const data = await res.json();
@@ -79,7 +77,7 @@ export default function PoapsPage() {
       } catch (err: any) {
         setError(err.message || "Error al obtener el POAP.");
       }
-      setLoading(false);
+      setLoadingPoap(false);
     }
     if (currentHash) fetchPoapInfo();
   }, [currentHash]);
@@ -96,7 +94,7 @@ export default function PoapsPage() {
         confirmButton: "Completar perfil",
         onConfirm: (confirm) => {
           if (confirm) {
-            window.location.href = `/Perfil/${address}?showModal=true`;
+            window.location.href = `/Perfil/${session?.wallet}?showModal=true`;
           }
         },
       });
@@ -108,7 +106,7 @@ export default function PoapsPage() {
       setClaiming(false);
       return;
     }
-    if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    if (!session?.wallet || !/^0x[a-fA-F0-9]{40}$/.test(session?.wallet)) {
       setError("Conecta tu wallet para reclamar.");
       setClaiming(false);
       return;
@@ -117,14 +115,14 @@ export default function PoapsPage() {
       const claimRes = await fetch("/api/poap/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qr_hash: currentHash, address }),
+        body: JSON.stringify({ qr_hash: currentHash, address: session?.wallet }),
       });
       if (!claimRes.ok) {
         const errData = await claimRes.json();
         throw new Error(errData?.error || JSON.stringify(errData) || "Error al reclamar el POAP.");
       }
       const claimData = await claimRes.json();
-      setClaimedData({ tokenId: claimData.tokenId, wallet: address });
+      setClaimedData({ tokenId: claimData.tokenId, wallet: session?.wallet });
       setModalOpen(true);
       removePoapHash(currentHash);
       setCurrentHash(usePoapHash());
@@ -135,7 +133,7 @@ export default function PoapsPage() {
   }
 
   // 1. Si no hay wallet conectada, muestra modal de login
-  if (!address) {
+  if (!session?.wallet) {
     return (
       <Modal isOpen={true} handleModal={() => {}}>
         <div
@@ -219,7 +217,7 @@ export default function PoapsPage() {
               fontWeight: "bold",
             }}
             onClick={() => {
-              window.location.href = `/Perfil/${address}?showModal=true`;
+              window.location.href = `/Perfil/${session?.wallet}?showModal=true`;
             }}
           >
             Completar perfil
@@ -326,7 +324,7 @@ export default function PoapsPage() {
               </div>
             )}
             {codesAvailable ? (
-              !address ? (
+                !session?.wallet ? (
                 <ButtonSignIn style={{ width: "100%", marginTop: 10 }}>
                   Conectar wallet para reclamar
                 </ButtonSignIn>
