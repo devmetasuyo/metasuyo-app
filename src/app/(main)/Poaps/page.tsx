@@ -21,7 +21,7 @@ type PoapData = {
 };
 
 export default function PoapsPage() {
-  const { session, loading } = usePrivySession();
+  const { session, loading, login } = usePrivySession();
   const { openModal } = useFeedbackModal();
   const [poapData, setPoapData] = useState<PoapData | null>(null);
   const [loadingPoap, setLoadingPoap] = useState(false);
@@ -132,49 +132,47 @@ export default function PoapsPage() {
     setClaiming(false);
   }
 
-  // 1. Si no hay wallet conectada, muestra modal de login
-  if (!session?.wallet) {
+  // 1. Si no hay wallet conectada, abrir login de Privy directamente
+  useEffect(() => {
+    if (!session?.wallet && !loading) {
+      login();
+    }
+  }, [session?.wallet, loading, login]);
+
+  // Si no hay sesión y está cargando, mostrar loading
+  if (!session?.wallet && loading) {
     return (
-      <Modal isOpen={true} handleModal={() => {}}>
-        <div
-          style={{
-            width: "90%",
-            maxWidth: "400px",
-            background: "#f5f5f5",
-            margin: "0 auto",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#333",
-            padding: "2rem",
-            borderRadius: "10px",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", textAlign: "center", fontWeight: "bold" }}>
-            ¡Reclama tu POAP!
-          </h2>
-          <p style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            Inicia sesión para reclamar tu POAP exclusivo.
-          </p>
-          <ButtonSignIn
-            style={{
-              padding: "0.75rem 1.5rem",
-              fontSize: "1rem",
-              background: "#f5a602",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              transition: "background 0.3s ease",
-              fontWeight: "bold",
-            }}
-          >
-            Iniciar sesión
-          </ButtonSignIn>
-        </div>
-      </Modal>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh',
+        color: 'white'
+      }}>
+        Conectando...
+      </div>
+    );
+  }
+
+  // Si no hay sesión después de cargar, mostrar mensaje
+  if (!session?.wallet && !loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh',
+        color: 'white',
+        textAlign: 'center',
+        padding: '2rem'
+      }}>
+        <h2 style={{ marginBottom: '1rem' }}>¡Reclama tu POAP!</h2>
+        <p style={{ marginBottom: '1.5rem' }}>Necesitas iniciar sesión para continuar.</p>
+                 <ButtonSignIn>
+          Iniciar sesión
+        </ButtonSignIn>
+      </div>
     );
   }
 
