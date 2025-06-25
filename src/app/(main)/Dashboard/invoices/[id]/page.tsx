@@ -126,7 +126,7 @@ export default function InvoiceDetailPage() {
             </div>
             <div className={styles.total}>
               <span>Total</span>
-              <h3>${invoice.total.toFixed(2)} USD</h3>
+              <h3>${Number(invoice.total).toFixed(2)} USD</h3>
             </div>
           </div>
 
@@ -160,7 +160,8 @@ export default function InvoiceDetailPage() {
               </div>
               {invoice.productos.map((producto, index) => {
                 // Calculate unit price from subtotal and quantity
-                const unitPrice = producto.precio / producto.cantidad;
+                const subtotal = Number(producto.precio);
+                const unitPrice = subtotal / producto.cantidad;
                 return (
                   <div key={index} className={styles.tableRow}>
                     <span>{producto.nombre}</span>
@@ -183,7 +184,7 @@ export default function InvoiceDetailPage() {
                         color: "white",
                       }}
                     >
-                      ${producto.precio.toFixed(2)} USD
+                      ${subtotal.toFixed(2)} USD
                     </span>
                   </div>
                 );

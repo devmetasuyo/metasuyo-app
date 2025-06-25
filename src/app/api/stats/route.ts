@@ -60,8 +60,13 @@ export async function GET() {
         },
         invoices: {
           total: totalInvoices,
-          totalRevenue: totalRevenue._sum.total || 0,
-          monthlyRevenue: monthlyRevenue
+          totalRevenue: Number(totalRevenue._sum.total || 0),
+          monthlyRevenue: monthlyRevenue.map(month => ({
+            ...month,
+            _sum: {
+              total: Number(month._sum.total || 0)
+            }
+          }))
         },
         products: {
           topSellers: topProducts

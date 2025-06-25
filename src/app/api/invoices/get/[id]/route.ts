@@ -35,7 +35,7 @@ export async function GET(
       invoice: {
         id: invoice.id,
         fecha: invoice.fecha,
-        total: invoice.total,
+        total: Number(invoice.total),
         estado: invoice.estado,
         cliente: {
           nombre: invoice.clientes?.nombre,
@@ -47,7 +47,7 @@ export async function GET(
         productos: invoice.productos.map((producto) => ({
           nombre: producto.productos?.nombre,
           cantidad: producto.cantidad,
-          precio: producto.sub_total,
+          precio: Number(producto.sub_total),
         })),
       },
     });

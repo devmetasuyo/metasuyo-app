@@ -33,12 +33,12 @@ export async function GET(
     const facturasFormateadas = customer.facturas.map((factura) => ({
       id: factura.id,
       fecha: factura.fecha,
-      total: factura.total,
+      total: Number(factura.total),
       estado: factura.estado,
       productos: factura.productos.map((detalle) => ({
         nombre: detalle.producto_id,
         cantidad: detalle.cantidad,
-        precio: detalle.sub_total,
+        precio: Number(detalle.sub_total),
       })),
     }));
 

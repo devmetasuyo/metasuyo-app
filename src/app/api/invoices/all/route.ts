@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       invoices: invoices.map((invoice) => ({
         id: invoice.id,
         fecha: invoice.fecha,
-        total: invoice.total,
+        total: Number(invoice.total),
         estado: invoice.estado,
         estado_sunat: invoice.sunat_en_factura?.estado_sunat ?? "pendiente",
         cliente: {
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         productos: invoice.productos.map((producto) => ({
           nombre: producto.producto_id,
           cantidad: producto.cantidad,
-          precio: producto.sub_total,
+          precio: Number(producto.sub_total),
         })),
       })),
     });
