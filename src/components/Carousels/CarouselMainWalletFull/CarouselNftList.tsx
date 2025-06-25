@@ -50,13 +50,13 @@ export const CarouselNftList = ({ collectionId }: { collectionId: number }) => {
   return (
     <>
       {validNfts.map((nft) => (
-        <CarouselNftVerifyOwner
-          key={nft.id}
+            <CarouselNftVerifyOwner
+              key={nft.id}
           addressCheck={adminWallet || ""} // Fallback a string vacío
-          id={nft.id}
-        >
-          <CarouselMainNft id={nft.id} />
-        </CarouselNftVerifyOwner>
+              id={nft.id}
+            >
+              <CarouselMainNft id={nft.id} />
+            </CarouselNftVerifyOwner>
       ))}
     </>
   );

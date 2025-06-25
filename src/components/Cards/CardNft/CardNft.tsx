@@ -32,7 +32,9 @@ export function CardNft({ id }: { id: number }) {
                     {data && (
                       <>
                         <NFTDetails data={{ ...data }} />
-                        <NFTOwnershipActions id={id} data={{ ...data }} />
+                        <div className={styles.ownershipActions}>
+                          <NFTOwnershipActions id={id} data={{ ...data }} />
+                        </div>
                       </>
                     )}
                   </>

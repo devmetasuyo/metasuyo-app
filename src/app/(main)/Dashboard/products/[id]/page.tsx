@@ -25,6 +25,9 @@ type FormDataProduct = {
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [editing, setEditing] = useState(false);
+  const [ethToUsdRate, setEthToUsdRate] = useState(0);
+  const [penToUsdRate, setPenToUsdRate] = useState(0);
+  const [usdPrice, setUsdPrice] = useState(0);
 
   const id = params.id;
   const {
@@ -32,6 +35,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<Product>({
     resolver: zodResolver(productSchema),
   });
@@ -56,6 +60,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       alert("Se a creado su prodcuto con exito");
     }
   }
+
   useEffect(() => {
     const fetchData = async () => {
       if (id !== "new") {
@@ -80,6 +85,41 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     fetchData();
     setEditing(true);
   }, []);
+
+  useEffect(() => {
+    const fetchConversionRates = async () => {
+      try {
+        // Fetch ETH to USD rate from CoinGecko
+        const ethResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        const ethData = await ethResponse.json();
+        const ethToUsd = ethData.ethereum.usd;
+        
+        // Fetch USD to PEN rate
+        const fiatResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        const fiatData = await fiatResponse.json();
+        const usdToPen = fiatData.rates.PEN;
+        
+        setEthToUsdRate(ethToUsd);
+        setPenToUsdRate(usdToPen);
+      } catch (error) {
+        console.error('Error fetching conversion rates:', error);
+        // Set fallback rates
+        setEthToUsdRate(3000); // Approximate ETH price
+        setPenToUsdRate(3.8); // Approximate USD to PEN rate
+      }
+    };
+    fetchConversionRates();
+  }, []);
+
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const price = parseFloat(event.target.value) || 0;
+    setUsdPrice(price);
+    setValue('precio', price);
+  };
+
+  // Calculate converted prices
+  const ethPrice = ethToUsdRate > 0 ? (usdPrice / ethToUsdRate) : 0;
+  const penPrice = penToUsdRate > 0 ? (usdPrice * penToUsdRate) : 0;
 
   return (
     <>
@@ -142,16 +182,18 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 {...register("descripcion")}
               />
               <Input
-                label="Precio"
+                label="Precio (USD)"
                 id="precio"
                 type="number"
+                step="0.01"
+                {...register("precio", { valueAsNumber: true })}
+                onChange={handlePriceChange}
                 errors={errors.precio?.message}
-                step={0.00000000005}
-                placeholder="Precio"
-                {...register("precio", {
-                  valueAsNumber: true,
-                })}
               />
+              <div>
+                <p>Precio en ETH: {ethPrice.toFixed(6)}</p>
+                <p>Precio en Soles: {penPrice.toFixed(2)}</p>
+              </div>
               <Input
                 label="Cantidad"
                 id="cantidad"

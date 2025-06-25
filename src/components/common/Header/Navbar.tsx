@@ -60,21 +60,27 @@ export function Navbar({ children, userLinks }: Props) {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         <ul className="navbar-links" style={{ display: "flex", alignItems: "center", gap: 16, listStyle: "none", margin: 0, padding: 2 }}>
-          {userLinks.map((link) => (
-            <li key={link.label}>
-              <Link 
-                href={`/${link.href}`}
-                style={{ color: '#fff', textDecoration: 'none' }}
-                onMouseDown={e => e.currentTarget.style.color = '#fff'}
-                onMouseUp={e => e.currentTarget.style.color = '#fff'}
-                onMouseLeave={e => e.currentTarget.style.color = '#fff'}
-                onFocus={e => e.currentTarget.style.color = '#fff'}
-                onBlur={e => e.currentTarget.style.color = '#fff'}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          {userLinks.map((link) => {
+            if (link.label === "Perfil" && !session) {
+              return null;
+            }
+            
+            return (
+              <li key={link.label}>
+                <Link 
+                  href={link.label === "Perfil" && session ? `/Perfil/${session.wallet}` : `/${link.href}`}
+                  style={{ color: '#fff', textDecoration: 'none' }}
+                  onMouseDown={e => e.currentTarget.style.color = '#fff'}
+                  onMouseUp={e => e.currentTarget.style.color = '#fff'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#fff'}
+                  onFocus={e => e.currentTarget.style.color = '#fff'}
+                  onBlur={e => e.currentTarget.style.color = '#fff'}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
           {isAdmin && (
             <li>
               <AdminLinks />

@@ -46,6 +46,9 @@ export default function CartPage() {
   const [showPaymentMethodModal, setShowPaymentMethodModal] = useState(false);
   const [showYapeModal, setShowYapeModal] = useState(false);
   const [showCryptoModal, setShowCryptoModal] = useState(false);
+  const [operationNumber, setOperationNumber] = useState("");
+  const [isProcessingYapePayment, setIsProcessingYapePayment] = useState(false);
+  const [usdToPenRate, setUsdToPenRate] = useState(3.8);
 
   const { data: balanceData, refetch } = useBalance({
     address: user?.wallet as `0x${string}`,
@@ -55,6 +58,21 @@ export default function CartPage() {
 
   const [hasPaid, setHasPaid] = useState(false);
 
+  // Fetch conversion rate
+  useEffect(() => {
+    const fetchConversionRate = async () => {
+      try {
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        const data = await response.json();
+        setUsdToPenRate(data.rates.PEN);
+      } catch (error) {
+        console.error('Error fetching conversion rate:', error);
+        // Keep default rate
+      }
+    };
+    fetchConversionRate();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       refetch();
@@ -63,9 +81,13 @@ export default function CartPage() {
   }, [refetch]);
 
   useEffect(() => {
+    // Convertir USD a ETH para comparar con el balance
+    const ethPrice = localStorage.getItem("price");
+    const requiredEthAmount = totalPrice / (Number(ethPrice) || 3000);
+    
     if (
       balanceData &&
-      Number(balanceData.formatted) >= totalPrice &&
+      Number(balanceData.formatted) >= requiredEthAmount &&
       !hasPaid
     ) {
       handleSend();
@@ -130,11 +152,111 @@ export default function CartPage() {
     );
   }
 
-  const handleSend = () => {
-    sendTransaction({
-      to: ADMIN_WALLET,
-      value: parseEther(totalPrice.toString()),
+  const handleSend = async () => {
+    try {
+      // Primero crear la orden en la base de datos si no existe
+      console.log("Creando orden en la base de datos para pago crypto...");
+      await createOrderInDatabase();
+      console.log("Orden creada exitosamente para pago crypto");
+
+      // Convertir USD a ETH para la transacción
+      const ethPrice = localStorage.getItem("price");
+      const ethAmount = totalPrice / (Number(ethPrice) || 3000);
+      sendTransaction({
+        to: ADMIN_WALLET,
+        value: parseEther(ethAmount.toString()),
+      });
+    } catch (error) {
+      console.error("Error al crear orden para pago crypto:", error);
+      alert(`Error al procesar el pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    }
+  };
+
+  const createOrderInDatabase = async () => {
+    if (!order?.id || !user?.wallet) {
+      throw new Error("No se encontró la orden o el usuario");
+    }
+
+    const productosInList = Object.values(order.cart).map(item => ({
+      id: item.id,
+      quantity: item.quantity,
+      price: item.price
+    }));
+
+    const response = await fetch("/api/invoices/manage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        wallet: user.wallet,
+        id: order.id,
+        productosInList
+      }),
     });
+
+    const data = await response.json();
+    if (data.status !== "success") {
+      throw new Error(data.message || "Error al crear la orden");
+    }
+    
+    return data.order;
+  };
+
+  const handleYapePayment = async () => {
+    if (!operationNumber.trim()) {
+      alert("Por favor ingresa el número de operación");
+      return;
+    }
+
+    if (!order?.id) {
+      alert("No se encontró la orden");
+      return;
+    }
+
+    setIsProcessingYapePayment(true);
+
+    try {
+      // Primero crear la orden en la base de datos si no existe
+      console.log("Creando orden en la base de datos...");
+      await createOrderInDatabase();
+      console.log("Orden creada exitosamente");
+
+      // Ahora marcar la factura como pagada con el número de operación
+      const response = await fetch(`/api/invoices/manage?id=${order.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: order.id,
+          total: totalPrice, // El total ya está en USD como se espera
+          hash: `YAPE-${operationNumber}`, // Prefijo para identificar pagos YAPE
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.status === "success") {
+        openModal({
+          cancelButton: undefined,
+          title: "¡Pago registrado exitosamente!",
+          message: "Tu pago con YAPE ha sido registrado. El equipo Metasuyo se pondrá en contacto contigo para confirmar y procesar tu orden.",
+          type: "success",
+          confirmButton: "Entendido",
+          onConfirm: () => {
+            localStorage.removeItem("order");
+            router.push("/Shop");
+          },
+        });
+        
+        setShowYapeModal(false);
+        setOperationNumber("");
+      } else {
+        throw new Error(data.message || "Error al procesar el pago");
+      }
+    } catch (error) {
+      console.error("Error al procesar pago YAPE:", error);
+      alert(`Error al procesar el pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    } finally {
+      setIsProcessingYapePayment(false);
+    }
   };
 
   return (
@@ -249,9 +371,46 @@ export default function CartPage() {
         <div className={styles.feedbackModal}>
           <h2>Paga con YAPE</h2>
           <p>Escanea el QR o transfiere a:</p>
-          <img src="/yape-qr.png" alt="Yape QR" style={{ width: 200, margin: "0 auto" }} />
-          <p>Celular: <b>938592837</b></p>
-          <Button onClick={() => setShowYapeModal(false)}>Cerrar</Button>
+          <img src="/qr.jpg" alt="Yape QR" style={{ width: 200, margin: "0 auto" }} />
+          <p>Celular: <b> 958 824 559 </b></p>
+          <p><b>Monto a pagar: S/ {(totalPrice * usdToPenRate).toFixed(2)}</b></p>
+          
+          <div style={{ margin: "16px 0" }}>
+            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+              Número de operación:
+            </label>
+            <input
+              type="text"
+              placeholder="Ingresa el número de operación de YAPE"
+              value={operationNumber}
+              onChange={(e) => setOperationNumber(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "8px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                fontSize: "14px"
+              }}
+              disabled={isProcessingYapePayment}
+            />
+          </div>
+          
+          <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+            <Button 
+              onClick={handleYapePayment}
+              disabled={isProcessingYapePayment || !operationNumber.trim()}
+              color="primary"
+            >
+              {isProcessingYapePayment ? "Procesando..." : "Marcar como pagado"}
+            </Button>
+            <Button 
+              onClick={() => setShowYapeModal(false)}
+              color="secondary"
+              disabled={isProcessingYapePayment}
+            >
+              Cancelar
+            </Button>
+          </div>
         </div>
       </Modal>
 
@@ -279,7 +438,10 @@ export default function CartPage() {
             <b>Saldo actual:</b> {balanceData?.formatted} {balanceData?.symbol}
           </Text>
           <Text className={styles.text}>
-            <b>Monto a pagar:</b> {totalPrice} {balanceData?.symbol}
+            <b>Monto total: ${totalPrice.toFixed(2)} USD</b>
+          </Text>
+          <Text className={styles.text}>
+            <b>Monto a pagar:</b> {(totalPrice / (Number(localStorage.getItem("price")) || 3000)).toFixed(6)} {balanceData?.symbol}
           </Text>
           <Text className={styles.text}>
             Cuando tu saldo sea suficiente, el pago se enviará automáticamente a la cuenta de Metasuyo.

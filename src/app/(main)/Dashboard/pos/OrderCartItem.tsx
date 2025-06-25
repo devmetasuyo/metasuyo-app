@@ -40,10 +40,10 @@ export function OrderCartItem({
         <h4>{name}</h4>
 
         <div className={styles.subtotal}>
-          eth {(price * quantity).toFixed(10)}
+          ${(price * quantity).toFixed(2)} USD
         </div>
         <div className={styles.subtotal}>
-          $ {(price * priceUsd * quantity).toFixed(14)}
+          {priceUsd > 0 ? ((price * quantity) / priceUsd).toFixed(6) : '0.000000'} ETH
         </div>
       </div>
       <div className={styles.actions}>

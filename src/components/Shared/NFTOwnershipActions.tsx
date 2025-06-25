@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useGetNftOwner } from "@/hooks/useGetNftOwner";
 import { Button, Input, TransactionWrapper } from "@/components";
-import { useAccount } from "wagmi";
+import { usePrivySession } from "@/hooks/usePrivySession";
 import { Nft } from "@/types";
 
 export interface NFTOwnershipProps {
@@ -14,8 +14,22 @@ export interface NFTOwnershipProps {
 export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
   const addressContract = process.env
     .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
-  const { address: userAddress, isConnecting } = useAccount();
-  const { data: owner } = useGetNftOwner(addressContract, id);
+  const { session, loading } = usePrivySession();
+  const { data: owner, isLoading: ownerLoading, isError: ownerError } = useGetNftOwner(addressContract, id);
+
+  // Debug logs
+  console.log('NFTOwnershipActions Debug:', {
+    id,
+    owner,
+    userAddress: session?.wallet,
+    loading,
+    ownerLoading,
+    ownerError,
+    addressContract,
+    isOwner: owner?.toLowerCase() === session?.wallet?.toLowerCase(),
+    hasUserAddress: !!session?.wallet,
+    hasOwner: !!owner
+  });
 
   const [formData, setFormData] = useState({
     walletTo: "",
@@ -32,11 +46,23 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
     // TODO "Transferir a:", formData.walletTo
   };
 
-  if (isConnecting) {
-    return <span>Loading...</span>;
+  if (loading || ownerLoading) {
+    return <span style={{ color: "white" }}>Cargando información del NFT...</span>;
   }
 
-  if (owner?.toLowerCase() === userAddress?.toLowerCase()) {
+  if (ownerError) {
+    return <span style={{ color: "red" }}>Error al cargar información del owner</span>;
+  }
+
+  if (!session?.wallet) {
+    return <span style={{ color: "white" }}>Conecta tu wallet para interactuar con este NFT</span>;
+  }
+
+  if (!owner) {
+    return <span style={{ color: "white" }}>No se pudo determinar el owner del NFT</span>;
+  }
+
+  if (owner?.toLowerCase() === session?.wallet?.toLowerCase()) {
     return (
       <>
         <span className="owner-message">Eres el dueño</span>
@@ -52,7 +78,7 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
     );
   }
 
-  if (owner?.toLowerCase() !== userAddress?.toLowerCase() && userAddress) {
+  if (owner?.toLowerCase() !== session?.wallet?.toLowerCase() && session?.wallet) {
     return (
       <>
         <Input
@@ -62,13 +88,22 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
           onChange={handleChange}
           value={formData.uid}
         />
-        <TransactionWrapper
-          address={userAddress}
-          idNtf={id}
-          uid={formData.uid}
-          nftData={data}
-          onSuccess={() => {}}
-        />
+        {formData.uid ? (
+          <TransactionWrapper
+            address={session?.wallet as `0x${string}`}
+            idNtf={id}
+            uid={formData.uid}
+            nftData={data}
+            onSuccess={() => {
+              // Reset the form after successful claim
+              setFormData({ walletTo: "", uid: "" });
+            }}
+          />
+        ) : (
+          <Button disabled style={{ opacity: 0.5 }}>
+            Ingrese un UID para reclamar
+          </Button>
+        )}
         <span
           style={{ color: "white", marginTop: "0.5rem", fontSize: "0.8rem" }}
         >
@@ -82,5 +117,13 @@ export function NFTOwnershipActions({ id, data }: NFTOwnershipProps) {
     );
   }
 
-  return <span className="owner-message">El dueño es: {owner}</span>;
+  return (
+    <div style={{ color: "white" }}>
+      <p>El dueño de este NFT es:</p>
+      <p style={{ fontFamily: "monospace", fontSize: "0.9rem", wordBreak: "break-all" }}>{owner}</p>
+      <p style={{ fontSize: "0.8rem", marginTop: "1rem" }}>
+        Para reclamar este NFT, necesitas conectar una wallet diferente a la del owner.
+      </p>
+    </div>
+  );
 }

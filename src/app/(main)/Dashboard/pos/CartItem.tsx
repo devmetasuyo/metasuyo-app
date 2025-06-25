@@ -26,11 +26,8 @@ export const CartItem = ({
   priceUsd,
   handleClick,
 }: CartItemProps) => {
-  const ethToUsd = 2000;
-
-  const formatEth = (usdPrice: number) => {
-    return (usdPrice / ethToUsd).toFixed(4);
-  };
+  // price viene en USD, priceUsd es la tasa de conversión ETH->USD
+  const ethPrice = priceUsd > 0 ? (price / priceUsd) : 0;
 
   return (
     <Card
@@ -39,7 +36,7 @@ export const CartItem = ({
       onClick={() =>
         handleClick({
           id,
-          precio: price,
+          precio: price, // Guardar en USD
           image,
           nombre: name,
           descripcion: description,
@@ -55,10 +52,10 @@ export const CartItem = ({
         </div>
         <Text as="span">Precio</Text>
         <Text as="p" className="price">
-          ${priceUsd.toFixed(4)}
+          ${price.toFixed(2)} USD
         </Text>
         <Text as="p" className="price">
-          {price.toFixed(10)} ETH
+          {ethPrice.toFixed(6)} ETH
         </Text>
         <div className="rating">
           {/* <span className="star">⭐</span>

@@ -73,7 +73,32 @@ export function TransactionWrapper({
       setModalOpen(true);
       onSuccess();
     } catch (err: any) {
-      setError(err.message || "Error al reclamar el NFT");
+      console.log("Error en transacción:", err);
+      
+      // Manejar diferentes tipos de errores
+      if (err?.code === "UNPREDICTABLE_GAS_LIMIT") {
+        if (err?.reason?.includes("UID not created")) {
+          setError("El UID proporcionado no existe o no ha sido creado. Verifica tu código de promoción.");
+        } else {
+          setError("Error al calcular el gas de la transacción. El UID puede no ser válido.");
+        }
+      } else if (err?.message?.includes("User rejected") || 
+                 err?.message?.includes("user rejected") || 
+                 err?.message?.includes("User denied") ||
+                 err?.message?.includes("rejected") ||
+                 err?.code === 4001) {
+        setError("Transacción cancelada por el usuario.");
+      } else if (err?.message?.includes("execution reverted")) {
+        if (err?.message?.includes("UID not created")) {
+          setError("El UID proporcionado no existe. Solicita un UID válido.");
+        } else {
+          setError("La transacción fue rechazada por el contrato. Verifica tu UID.");
+        }
+      } else if (err?.message?.includes("insufficient funds")) {
+        setError("Fondos insuficientes para completar la transacción.");
+      } else {
+        setError("Error al procesar la transacción. Inténtalo de nuevo.");
+      }
     } finally {
       setTxLoading(false);
     }

@@ -7,9 +7,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   return (
     <ErrorBoundary>
       <Providers>
-        {children}
-        <FeedbackModal />
-      </Providers>
+      {children}
+      <FeedbackModal />
+    </Providers>
     </ErrorBoundary>
   );
 }

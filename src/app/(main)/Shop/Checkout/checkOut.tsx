@@ -91,12 +91,12 @@ export default function Component({
               </Text>
               <div className={styles.itemPriceContainer}>
                 <Text className={styles.itemPrice}>
-                  <FaEthereum className={styles.icon} />
-                  {formatEthPrice(item.price)}
+                  <PiCurrencyDollar size={16} />
+                  ${item.price.toFixed(2)}
                 </Text>
                 <Text className={styles.itemPrice}>
-                  <PiCurrencyDollar size={16} />
-                  {formatUsdPrice(item.price * price)}
+                  <FaEthereum className={styles.icon} />
+                  {formatEthPrice(item.price / (price || 3000))}
                 </Text>
                 <div className={styles.quantitySelector}>
                   <Button size="xs" onClick={() => onAction(item, "decrement")}>
@@ -123,30 +123,30 @@ export default function Component({
             </div>
             <div className={styles.summaryItem}>
               <Text>
-                <FaEthereum size={16} />
+                <PiCurrencyDollar size={16} />
               </Text>
-              <Text>{formatEthPrice(totalPrice)}</Text>
+              <Text>${totalPrice.toFixed(2)}</Text>
             </div>
             <div className={styles.summaryItem}>
               <Text>
-                <PiCurrencyDollar size={16} />
+                <FaEthereum size={16} />
               </Text>
-              <Text>{formatUsdPrice(totalPrice * price)}</Text>
+              <Text>{formatEthPrice(totalPrice / (price || 3000))}</Text>
             </div>
             <div className={styles.summaryTotal}>
               <Text>Total</Text>
             </div>
             <div className={styles.summaryItem}>
               <Text>
-                <FaEthereum size={16} />
+                <PiCurrencyDollar size={16} />
               </Text>
-              <Text>{formatEthPrice(totalPrice)}</Text>
+              <Text>${totalPrice.toFixed(2)}</Text>
             </div>
             <div className={styles.summaryItem}>
               <Text>
-                <PiCurrencyDollar size={16} />
+                <FaEthereum size={16} />
               </Text>
-              <Text>{formatUsdPrice(totalPrice * price)}</Text>
+              <Text>{formatEthPrice(totalPrice / (price || 3000))}</Text>
             </div>
             <Button
               size="full"

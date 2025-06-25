@@ -1,6 +1,6 @@
 import { useGetNftsByCollection } from "@/hooks/useGetNftsByCollection";
 import { Spinner } from "@/components";
-import { useAccount } from "wagmi";
+import { usePrivySession } from "@/hooks/usePrivySession";
 import { CarouselNftVerifyOwner } from "../Carousels/Carousel";
 import { GridCardNft } from "../Cards";
 
@@ -12,22 +12,22 @@ export const GridNftsCollectionWrapper = ({
   address: `0x${string}`;
 }) => {
   const { data, isLoading } = useGetNftsByCollection(address, idCollection);
-  const { address: userAddress, isConnecting } = useAccount();
+  const { session, loading } = usePrivySession();
 
-  if (isLoading || isConnecting) return <Spinner />;
-  if (!userAddress) return <p>Connect your wallet</p>;
+  if (isLoading || loading) return <Spinner />;
+  if (!session) return <p>Connect your wallet</p>;
 
   return (
     <>
       {data.map(
         (item) =>
           item.name.trim() !== "" && (
-            <CarouselNftVerifyOwner id={item.id} addressCheck={userAddress}>
+            <CarouselNftVerifyOwner id={item.id} addressCheck={session?.wallet as string}>
               <GridCardNft
                 key={item.id}
                 activeSession={false}
                 id={item.id}
-                address={address}
+                address={session?.wallet as `0x${string}`}
               />
             </CarouselNftVerifyOwner>
           )

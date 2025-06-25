@@ -46,12 +46,16 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
   } | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [alert, setAlert] = useState<AlertState>({ type: null, message: "" });
+  const [ethToUsdRate, setEthToUsdRate] = useState(0);
+  const [penToUsdRate, setPenToUsdRate] = useState(0);
+  const [usdPrice, setUsdPrice] = useState(0);
 
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<NftFormData>({
     resolver: zodResolver(nftSchema),
   });
@@ -87,12 +91,47 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
     }
   }, [isTransactionSuccess, transactionError, writeError, reset]);
 
+  useEffect(() => {
+    const fetchConversionRates = async () => {
+      try {
+        // Fetch ETH to USD rate from CoinGecko
+        const ethResponse = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        const ethData = await ethResponse.json();
+        const ethToUsd = ethData.ethereum.usd;
+        
+        // Fetch USD to PEN rate
+        const fiatResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        const fiatData = await fiatResponse.json();
+        const usdToPen = fiatData.rates.PEN;
+        
+        setEthToUsdRate(ethToUsd);
+        setPenToUsdRate(usdToPen);
+      } catch (error) {
+        console.error('Error fetching conversion rates:', error);
+        // Set fallback rates
+        setEthToUsdRate(3000); // Approximate ETH price
+        setPenToUsdRate(3.8); // Approximate USD to PEN rate
+      }
+    };
+    fetchConversionRates();
+  }, []);
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
     }
   };
+
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const price = parseFloat(event.target.value) || 0;
+    setUsdPrice(price);
+    setValue('price', price);
+  };
+
+  // Calculate converted prices
+  const ethPrice = ethToUsdRate > 0 ? (usdPrice / ethToUsdRate) : 0;
+  const penPrice = penToUsdRate > 0 ? (usdPrice * penToUsdRate) : 0;
 
   const rarityOptions = [
     { value: "1", label: "Ordinario" },
@@ -167,7 +206,7 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
 
       executeCreateNFT({
         to: userAddress as `0x${string}`,
-        jsonData: collections[data.category].name,
+        jsonData: metadataHash,
         newPrice: data.price,
         collectionId: data.category,
         name: data.title,
@@ -327,13 +366,18 @@ export default function NFTForm({ collections, userAddress, isWalletConnected = 
         />
 
         <Input
-          label="Precio"
+          label="Precio (USD)"
           id="precio"
           type="number"
           step="0.01"
           {...register("price", { valueAsNumber: true })}
+          onChange={handlePriceChange}
           errors={errors.price?.message}
         />
+        <div>
+          <p>Precio en ETH: {ethPrice.toFixed(6)}</p>
+          <p>Precio en Soles: {penPrice.toFixed(2)}</p>
+        </div>
         <div style={{ width: "100%", display: "flex", marginTop: "20px" }}>
           <Button
             disabled={isTransactionLoading || isWritePending}

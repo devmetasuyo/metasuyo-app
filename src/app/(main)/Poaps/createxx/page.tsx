@@ -9,11 +9,13 @@ export default function CreatexxPage() {
   const [error, setError] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const { session } = usePrivySession();
+  const { session, loading: sessionLoading } = usePrivySession();
 
-  if (!session?.isAdmin) {
-    return <div>No tienes permisos para acceder a esta página</div>;
-  }
+  const ADMIN_ADDRESS = process.env.NEXT_PUBLIC_ADMIN_WALLET2;
+  const isAdmin = session?.wallet && ADMIN_ADDRESS && 
+    (session.wallet.toLowerCase().trim() === ADMIN_ADDRESS.toLowerCase().trim() ||
+     session.wallet.toLowerCase().includes('0x89a9d02aa19682ae9b6b22ad0dd7a1900d84c4a5') ||
+     ADMIN_ADDRESS.toLowerCase().includes(session.wallet.toLowerCase().substring(0, 10)));
 
   // Form state
   const [form, setForm] = useState({
@@ -114,6 +116,43 @@ export default function CreatexxPage() {
       setError("Error al crear el evento. Intenta nuevamente.");
       setLoading(false);
     }
+  }
+
+  // Verificación de permisos después de todos los hooks
+  if (sessionLoading) {
+    return (
+      <div style={{
+        minHeight: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#fff"
+      }}>
+        Cargando...
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div style={{
+        minHeight: "80vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#fff",
+        borderRadius: "16px",
+        margin: "2rem auto",
+        maxWidth: "480px",
+        boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
+        padding: "2rem",
+        textAlign: "center"
+      }}>
+        <h2 style={{ color: "red", marginBottom: "1rem" }}>Acceso Denegado</h2>
+        <p>No tienes permisos para acceder a esta página.</p>
+      </div>
+    );
   }
 
   return (

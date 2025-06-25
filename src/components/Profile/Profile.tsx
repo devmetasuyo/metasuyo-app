@@ -34,6 +34,59 @@ export function Profile({ wallet }: { wallet: string }) {
     documento: " ",
   });
 
+  // Función para generar un color basado en el nombre
+  const generateColorFromName = (name: string): string => {
+    if (!name || name.trim() === " ") return "#6366f1"; // Color por defecto
+    
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // Generar color HSL para mejores colores
+    const hue = Math.abs(hash) % 360;
+    const saturation = 65; // Saturación media para colores vibrantes pero no muy intensos
+    const lightness = 50; // Luminosidad media para buen contraste
+    
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+
+  // Función para obtener la primera letra del nombre
+  const getInitial = (): string => {
+    const name = clienteData?.nombre?.trim();
+    if (name && name !== " " && name.length > 0) {
+      return name.charAt(0).toUpperCase();
+    }
+    return "U"; // "Usuario" por defecto
+  };
+
+  // Componente Avatar
+  const Avatar = () => {
+    const initial = getInitial();
+    const backgroundColor = generateColorFromName(clienteData?.nombre || "Usuario");
+    
+    return (
+      <div 
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "50%",
+          backgroundColor,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "4rem",
+          fontWeight: "bold",
+          color: "white",
+          textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+          boxSizing: "border-box"
+        }}
+      >
+        {initial}
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (!wallet) {
       route.replace("/");
@@ -127,7 +180,7 @@ export function Profile({ wallet }: { wallet: string }) {
       <div className="profile">
         <div className="container-profile">
           <div className="circle-profile">
-            <img src={data?.avatar} alt="Perfil" defaultValue={"/icon.png"} />
+            <Avatar />
           </div>
           <div className="name-profile">
             <span>

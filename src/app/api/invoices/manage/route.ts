@@ -115,93 +115,117 @@ export const POST = async (request: NextRequest) => {
 };
 
 export const PUT = async (request: NextRequest) => {
-  const data = await request.json();
+  try {
+    const data = await request.json();
+    const { hash, id, total } = data;
 
-  const { hash, id, total } = data;
+    console.log("PUT /api/invoices/manage - Datos recibidos:", { hash, id, total });
 
-  if (!id)
-    return Response.json({
-      data: null,
-      status: "error",
-      message: "ID not found",
-    });
+    if (!id) {
+      return Response.json({
+        data: null,
+        status: "error",
+        message: "ID not found",
+      });
+    }
 
-  const factura = await prisma.$transaction(async (prisma) => {
-    const factura = await prisma.facturas.findUnique({
+    // Primero verificar si la factura existe
+    const facturaExistente = await prisma.facturas.findUnique({
       where: { id },
-      include: {
-        productos: true,
-      },
+      include: { productos: true },
     });
 
-    if (!factura) {
-      throw new Error("Factura no encontrada");
+    console.log("Factura encontrada:", facturaExistente ? "SÍ" : "NO");
+
+    if (!facturaExistente) {
+      return Response.json({
+        data: null,
+        status: "error",
+        message: `Factura no encontrada con ID: ${id}. Asegúrate de que la orden esté creada antes de marcar el pago.`,
+      });
     }
 
-    const productos = await prisma.productos.findMany({
-      where: {
-        AND: factura.productos.map((product) => {
-          return { id: product.producto_id };
-        }),
-      },
-    });
-
-    const totalVerificado = productos.reduce((total, producto) => {
-      const productoInList = factura.productos.find(
-        (item) => item.producto_id === producto.id
-      );
-
-      if (!productoInList) {
-        throw new Error("Producto no encontrado");
-      }
-      const totalFix = new Big(Number(producto.precio));
-      return total + totalFix.mul(productoInList.cantidad).toNumber();
-    }, 0);
-
-    const compared = new Big(total / 1000000000000000000);
-
-    if (!compared.eq(totalVerificado)) {
-      throw new Error("Total no coincide");
-    }
-
-    const facturaActualizada = await prisma.facturas.update({
-      data: {
-        estado: "pagado",
-        hash: hash,
-      },
-      include: {
-        productos: {
-          include: {
-            productos: true,
-          },
-        },
-      },
-      where: {
-        id,
-      },
-    });
-
-    if (!facturaActualizada) {
-      throw new Error("Factura no encontrada");
-    }
-
-    for (const item of facturaActualizada.productos) {
-      const producto = await prisma.productos.update({
-        data: {
-          cantidad: {
-            decrement: item.cantidad,
-          },
-        },
+    const factura = await prisma.$transaction(async (prisma) => {
+      const productos = await prisma.productos.findMany({
         where: {
-          id: item.producto_id,
+          AND: facturaExistente.productos.map((product) => {
+            return { id: product.producto_id };
+          }),
         },
       });
 
-      console.log(producto);
-    }
+      const totalVerificado = productos.reduce((total, producto) => {
+        const productoInList = facturaExistente.productos.find(
+          (item) => item.producto_id === producto.id
+        );
 
-    return facturaActualizada;
-  });
+        if (!productoInList) {
+          throw new Error("Producto no encontrado");
+        }
+        const totalFix = new Big(Number(producto.precio));
+        return total + totalFix.mul(productoInList.cantidad).toNumber();
+      }, 0);
 
-  return Response.json({ order: factura, status: "success" });
+      console.log("Total verificado:", totalVerificado, "Total recibido:", total);
+
+      // Verificar si es un pago YAPE (identificado por el prefijo en el hash)
+      const isYapePayment = hash && hash.startsWith("YAPE-");
+      
+      if (isYapePayment) {
+        // Para pagos YAPE, comparar directamente en USD
+        const totalDecimal = new Big(total);
+        if (!totalDecimal.eq(totalVerificado)) {
+          throw new Error(`Total no coincide. Recibido: ${total}, Esperado: ${totalVerificado}`);
+        }
+      } else {
+        // Para pagos crypto, convertir de wei a ETH
+        const compared = new Big(total / 1000000000000000000);
+        if (!compared.eq(totalVerificado)) {
+          throw new Error(`Total no coincide. Recibido: ${compared}, Esperado: ${totalVerificado}`);
+        }
+      }
+
+      const facturaActualizada = await prisma.facturas.update({
+        data: {
+          estado: "pagado",
+          hash: hash,
+        },
+        include: {
+          productos: {
+            include: {
+              productos: true,
+            },
+          },
+        },
+        where: {
+          id,
+        },
+      });
+
+      // Reducir inventario
+      for (const item of facturaActualizada.productos) {
+        await prisma.productos.update({
+          data: {
+            cantidad: {
+              decrement: item.cantidad,
+            },
+          },
+          where: {
+            id: item.producto_id,
+          },
+        });
+      }
+
+      return facturaActualizada;
+    });
+
+    return Response.json({ order: factura, status: "success" });
+  } catch (error) {
+    console.error("Error en PUT /api/invoices/manage:", error);
+    return Response.json({
+      data: null,
+      status: "error",
+      message: error instanceof Error ? error.message : "Error interno del servidor",
+    });
+  }
 };

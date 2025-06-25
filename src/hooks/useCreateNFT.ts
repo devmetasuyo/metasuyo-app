@@ -43,23 +43,23 @@ export const useCreateNFT = (address: `0x${string}`) => {
   }) => {
     if (!isWritePending && to && address) {
       try {
-        writeContract({
-          address: address,
-          abi: MetasuyoABI,
-          functionName: "mintNFT",
-          args: [
-            to,
-            BigInt(collectionId),
-            name,
-            BigInt(rarity),
-            jsonData,
-            uri,
-            imageUri,
-            stringToHex(uid, { size: 32 }),
-            BigInt(newPrice),
-            BigInt(duplicates),
-          ],
-        });
+      writeContract({
+        address: address,
+        abi: MetasuyoABI,
+        functionName: "mintNFT",
+        args: [
+          to,
+          BigInt(collectionId),
+          name,
+          BigInt(rarity),
+          jsonData,
+          uri,
+          imageUri,
+          stringToHex(uid, { size: 32 }),
+          BigInt(newPrice),
+          BigInt(duplicates),
+        ],
+      });
       } catch (error) {
         console.error("Error al ejecutar writeContract:", error);
       }

@@ -126,3 +126,18 @@ p {
   --light-text-color: #{$light-text-color};
   --light-hover-color: #{$light-hover-color};
 }
+
+/* Privy modal z-index fix */
+[data-privy-modal],
+.privy-modal,
+.privy-modal-backdrop,
+[class*="privy-modal"],
+[id*="privy-modal"] {
+  z-index: 9999 !important;
+}
+
+/* Ensure Privy modal backdrop is also above other modals */
+[data-privy-modal] + [data-privy-modal-backdrop],
+.privy-modal-backdrop {
+  z-index: 9998 !important;
+}

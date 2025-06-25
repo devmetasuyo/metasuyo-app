@@ -23,10 +23,24 @@ export default function Page() {
   const [bigPrice, setBigPrice] = useState<Big>(new Big(0));
 
   useEffect(() => {
-    const price = localStorage.getItem("price");
-    if (price) {
-      setBigPrice(new Big(price));
-    }
+    const fetchEthPrice = async () => {
+      try {
+        // Obtener precio de ETH desde CoinGecko
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        const data = await response.json();
+        const ethPrice = data.ethereum.usd;
+        
+        setBigPrice(new Big(ethPrice));
+        localStorage.setItem("price", ethPrice.toString());
+      } catch (error) {
+        console.error('Error fetching ETH price:', error);
+        // Usar precio guardado o fallback
+        const savedPrice = localStorage.getItem("price");
+        setBigPrice(new Big(savedPrice || "3000"));
+      }
+    };
+
+    fetchEthPrice();
   }, []);
 
   const [client, setClient] = useState<Client>();
@@ -37,10 +51,17 @@ export default function Page() {
   const { openModal } = useFeedbackModal();
   const [cart, setCart] = useState<Record<string, CartProduct>>({});
   const [totalPrice, setTotalPrice] = useState(0);
-
-  const [referencia, setReferencia] = useState<string>();
+  const [referencia, setReferencia] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("EFECTIVO");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSendInvoice = async () => {
+    console.log("🔍 handleSendInvoice ejecutándose");
+    console.log("Cliente:", client);
+    console.log("Carrito:", cart);
+    console.log("Referencia:", referencia);
+    console.log("Método de pago:", paymentMethod);
+    
     if (!client) {
       openModal({
         type: "warning",
@@ -51,33 +72,88 @@ export default function Page() {
       return;
     }
 
-    const items = Object.values(cart).map((item) => ({
-      id: item.id,
-      quantity: item.cantidad,
-    }));
-
-    const response = await fetch("/api/invoices/pos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items, referencia, client }),
-    });
-
-    const data = await response.json();
-
-    if (data.status === "success") {
+    if (Object.keys(cart).length === 0) {
       openModal({
-        type: "success",
-        title: "Factura enviada",
-        message: "Factura enviada con exito",
+        type: "warning",
+        title: "Error",
+        message: "El carrito está vacío",
         cancelButton: undefined,
       });
+      return;
+    }
 
-      setCart({});
-      setTotalPrice(0);
-      setBigPrice(new Big(0));
-      setClient(undefined);
-      setReferencia("");
-      setClientSearch("");
+    if (!referencia.trim() && paymentMethod !== "EFECTIVO") {
+      openModal({
+        type: "warning",
+        title: "Error",
+        message: "Debe ingresar una referencia de pago",
+        cancelButton: undefined,
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const items = Object.values(cart).map((item) => ({
+        id: item.id,
+        quantity: item.cantidad,
+      }));
+
+      console.log("Enviando datos:", { items, referencia, client, paymentMethod });
+
+      const response = await fetch("/api/invoices/pos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          items, 
+          referencia: referencia || `EFECTIVO-${Date.now()}`, 
+          client, 
+          paymentMethod 
+        }),
+      });
+
+      console.log("Respuesta status:", response.status);
+      const data = await response.json();
+      console.log("Respuesta datos:", data);
+
+      if (data.status === "success") {
+        openModal({
+          type: "success",
+          title: "¡Factura creada exitosamente!",
+          message: `Factura ${data.details.facturaId.slice(0, 8)}... creada por ${data.details.totalUSD.toFixed(2)} USD para ${data.details.cliente}`,
+          confirmButton: "Ver Factura",
+          cancelButton: "Cerrar",
+          onConfirm: () => {
+            window.open(`/Dashboard/invoices/${data.details.facturaId}`, '_blank');
+          },
+        });
+
+        // Limpiar el carrito
+        setCart({});
+        setTotalPrice(0);
+        setClient(undefined);
+        setReferencia("");
+        setClientSearch("");
+        setPaymentMethod("EFECTIVO");
+      } else {
+        openModal({
+          type: "warning",
+          title: "Error al crear factura",
+          message: data.message || "Error desconocido",
+          cancelButton: undefined,
+        });
+      }
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      openModal({
+        type: "warning",
+        title: "Error de conexión",
+        message: "No se pudo conectar con el servidor",
+        cancelButton: undefined,
+      });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -173,12 +249,16 @@ export default function Page() {
         />
       </main>
       <aside className="cart-sidebar">
-        <h3>Cliente {client?.name}</h3>
+        <h3>Cliente: {client?.name || "No seleccionado"}</h3>
         <ClientSearch
-          onSelectClient={(c: Client) => setClient(c)}
+          onSelectClient={(c: Client) => {
+            console.log("Cliente seleccionado:", c);
+            setClient(c);
+          }}
           value={clientSearch}
           onChange={setClientSearch}
           onAddClient={handleModal}
+          placeholder="Busca un cliente (ej: Goku)"
         />
         <div className="cart">
           <div className="order-type">
@@ -210,21 +290,60 @@ export default function Page() {
               <span style={{ textAlign: "left" }}>MONTO TOTAL</span>
             </div>
             <div className="summary-item total">
-              <span>ETH</span>
-              <span>{totalPrice.toFixed(14)}</span>
+              <span>USD</span>
+              <span>${totalPrice.toFixed(2)}</span>
             </div>
             <div className="summary-item total">
-              <span>USDC</span>
-              <span>{bigPrice.mul(totalPrice).toFixed(14)}</span>
+              <span>ETH</span>
+              <span>{bigPrice.toNumber() > 0 ? (totalPrice / bigPrice.toNumber()).toFixed(6) : '0.000000'}</span>
             </div>
           </div>
-          <Input
-            label="Referencia de pago"
-            errors={""}
-            onChange={(e) => setReferencia(e.target.value)}
-          />
-          <button className="confirm-order" onClick={handleSendInvoice}>
-            Confirmar Pedido
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+              Método de Pago:
+            </label>
+            <select 
+              value={paymentMethod} 
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                fontSize: "14px"
+              }}
+            >
+              <option value="EFECTIVO">Efectivo</option>
+              <option value="TARJETA">Tarjeta</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
+              <option value="YAPE">YAPE</option>
+              <option value="PLIN">PLIN</option>
+            </select>
+          </div>
+          
+          {paymentMethod !== "EFECTIVO" && (
+            <Input
+              label="Referencia de pago"
+              errors={""}
+              value={referencia}
+              onChange={(e) => setReferencia(e.target.value)}
+              placeholder={`Número de ${paymentMethod.toLowerCase()}`}
+            />
+          )}
+          
+          <button 
+            className="confirm-order" 
+            onClick={() => {
+              console.log("🔴 Botón clickeado!");
+              handleSendInvoice();
+            }}
+            disabled={isProcessing}
+            style={{
+              opacity: isProcessing ? 0.7 : 1,
+              cursor: isProcessing ? "not-allowed" : "pointer"
+            }}
+          >
+            {isProcessing ? "Procesando..." : "Crear Factura"}
           </button>
         </div>
       </aside>

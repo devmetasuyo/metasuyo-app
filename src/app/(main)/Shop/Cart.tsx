@@ -32,7 +32,7 @@ const Cart: React.FC<CartProps> = ({
   order,
   handleRemoveItemFromCart,
 }) => {
-  const { session, loading } = usePrivySession();
+  const { session, loading, login } = usePrivySession();
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
@@ -45,10 +45,17 @@ const Cart: React.FC<CartProps> = ({
   const router = useRouter();
 
   const handleRedirectToCheckout = async () => {
-    if (!order || !session) {
-      alert("No hay orden para procesar o no tienes una sesión activa");
+    if (!order) {
+      alert("No hay orden para procesar");
       return;
     }
+    
+    if (!session) {
+      // Abrir login de Privy si no hay sesión
+      login();
+      return;
+    }
+    
     router.push(`/Shop/Checkout`);
   };
 
@@ -88,10 +95,9 @@ const Cart: React.FC<CartProps> = ({
                             gap: "0.25rem",
                           }}
                         >
-                          <PiCurrencyEthFill size={16} />
-                          {Intl.NumberFormat("es-ES", {
-                            maximumSignificantDigits: 4,
-                            notation: "compact",
+                          <PiCurrencyDollar size={16} />
+                          ${Intl.NumberFormat("es-ES", {
+                            maximumFractionDigits: 2,
                           }).format(item.price * item.quantity)}
                         </span>
                       </Text>
@@ -104,12 +110,10 @@ const Cart: React.FC<CartProps> = ({
                             gap: "0.25rem",
                           }}
                         >
-                          <PiCurrencyDollar size={16} />
+                          <PiCurrencyEthFill size={16} />
                           {Intl.NumberFormat("es-ES", {
-                            maximumSignificantDigits: 2,
-                            maximumFractionDigits: 2,
-                            roundingPriority: "morePrecision",
-                          }).format(item.price * item.quantity * price)}
+                            maximumSignificantDigits: 6,
+                          }).format((item.price * item.quantity) / (price || 3000))}
                         </span>
                       </Text>
                       <Button
@@ -142,7 +146,7 @@ const Cart: React.FC<CartProps> = ({
                   gap: "0.25rem",
                 }}
               >
-                <PiCurrencyEthFill size={16} /> {totalPrice.toPrecision(4)}
+                <PiCurrencyDollar size={16} /> ${totalPrice.toFixed(2)}
               </p>
               <p
                 style={{
@@ -152,16 +156,14 @@ const Cart: React.FC<CartProps> = ({
                 }}
                 className={styles.totalPrice}
               >
-                <PiCurrencyDollar size={16} />{" "}
+                <PiCurrencyEthFill size={16} />{" "}
                 {Intl.NumberFormat("es-ES", {
-                  maximumSignificantDigits: 2,
-                  maximumFractionDigits: 2,
-                  roundingPriority: "morePrecision",
-                }).format(totalPrice * price)}
+                  maximumSignificantDigits: 6,
+                }).format(totalPrice / (price || 3000))}
               </p>
             </div>
-            <Button onClick={handleRedirectToCheckout} disabled={loading || !session}>
-              Pagar ({totalItems})
+            <Button onClick={handleRedirectToCheckout} disabled={loading}>
+              {!session ? "Iniciar sesión para pagar" : `Pagar (${totalItems})`}
             </Button>
           </div>
         </DrawerActions>
