@@ -48,14 +48,18 @@ export const useOrder = () => {
   };
 
   const addItemToCart = (item: CartItem) => {
+    console.log("addItemToCart llamado con:", item);
     const updatedOrder = order ? { ...order } : { id: uuidv4(), cart: {} };
     if (updatedOrder.cart[item.id]) {
       updatedOrder.cart[item.id].quantity += 1;
+      console.log("Producto existente, cantidad incrementada");
     } else {
       item.price = Number(item.price);
       updatedOrder.cart[item.id] = item;
+      console.log("Nuevo producto agregado al carrito");
     }
     updateOrder(updatedOrder);
+    console.log("Carrito actualizado:", updatedOrder);
   };
 
   const removeItemFromCart = (item: CartItem) => {

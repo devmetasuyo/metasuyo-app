@@ -27,13 +27,15 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const [editing, setEditing] = useState(false);
   const [ethToUsdRate, setEthToUsdRate] = useState(0);
   const [penToUsdRate, setPenToUsdRate] = useState(0);
-  const [usdPrice, setUsdPrice] = useState(0);
+  const [priceMode, setPriceMode] = useState<'ETH' | 'USD'>('USD');
+  const [inputValue, setInputValue] = useState('');
 
   const id = params.id;
   const {
     reset,
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     setValue,
   } = useForm<Product>({
@@ -71,13 +73,16 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         const data = await response.json();
 
         if (data.status === "success") {
+          const ethPrice = +data.product.precio;
           reset({
             cantidad: data.product?.cantidad ?? 0,
             categoria: data.product.categoria,
             nombre: data.product.nombre,
             descripcion: data.product.descripcion,
-            precio: +data.product.precio,
+            precio: ethPrice,
           });
+          // Inicializar el input con el precio en USD por defecto
+          setInputValue((ethPrice * 3000).toFixed(2));
         }
       }
     };
@@ -111,15 +116,45 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     fetchConversionRates();
   }, []);
 
+  // Get current price from form
+  const currentPrice = watch('precio') || 0;
+  
+  // Calcular precios para mostrar
+  const usdPrice = currentPrice * ethToUsdRate;
+  const ethPrice = currentPrice;
+  const penPrice = usdPrice * penToUsdRate;
+
+  // Inicializar inputValue cuando se carguen las tasas de conversión
+  useEffect(() => {
+    if (ethToUsdRate > 0 && currentPrice > 0 && !inputValue) {
+      setInputValue((currentPrice * ethToUsdRate).toFixed(2));
+    }
+  }, [ethToUsdRate, currentPrice, inputValue]);
+
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const price = parseFloat(event.target.value) || 0;
-    setUsdPrice(price);
-    setValue('precio', price);
+    const inputPrice = parseFloat(event.target.value) || 0;
+    setInputValue(event.target.value);
+    
+    if (priceMode === 'USD') {
+      // Convertir USD a ETH
+      const ethPrice = ethToUsdRate > 0 ? inputPrice / ethToUsdRate : 0;
+      setValue('precio', ethPrice);
+    } else {
+      // Ya está en ETH
+      setValue('precio', inputPrice);
+    }
   };
 
-  // Calculate converted prices
-  const ethPrice = ethToUsdRate > 0 ? (usdPrice / ethToUsdRate) : 0;
-  const penPrice = penToUsdRate > 0 ? (usdPrice * penToUsdRate) : 0;
+  const handleModeChange = (newMode: 'ETH' | 'USD') => {
+    setPriceMode(newMode);
+    
+    // Actualizar el valor del input cuando cambie el modo
+    if (newMode === 'USD') {
+      setInputValue(usdPrice.toFixed(2));
+    } else {
+      setInputValue(ethPrice.toFixed(6));
+    }
+  };
 
   return (
     <>
@@ -181,18 +216,50 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 placeholder="Descripción"
                 {...register("descripcion")}
               />
-              <Input
-                label="Precio (USD)"
-                id="precio"
-                type="number"
-                step="0.01"
-                {...register("precio", { valueAsNumber: true })}
-                onChange={handlePriceChange}
-                errors={errors.precio?.message}
-              />
-              <div>
-                <p>Precio en ETH: {ethPrice.toFixed(6)}</p>
-                <p>Precio en Soles: {penPrice.toFixed(2)}</p>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+                  Precio
+                </label>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <select
+                    value={priceMode}
+                    onChange={(e) => handleModeChange(e.target.value as 'ETH' | 'USD')}
+                    style={{
+                      padding: "8px 12px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      backgroundColor: "white",
+                      fontSize: "14px"
+                    }}
+                  >
+                    <option value="USD">USD</option>
+                    <option value="ETH">ETH</option>
+                  </select>
+                  <input
+                    type="number"
+                    step={priceMode === 'USD' ? "0.01" : "0.000001"}
+                    value={inputValue}
+                    onChange={handlePriceChange}
+                    placeholder={priceMode === 'USD' ? "100.00" : "0.001"}
+                    style={{
+                      flex: 1,
+                      padding: "8px 12px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      fontSize: "14px"
+                    }}
+                  />
+                </div>
+                {errors.precio?.message && (
+                  <span style={{ color: "red", fontSize: "12px" }}>{errors.precio.message}</span>
+                )}
+              </div>
+              
+              <div style={{ marginTop: "10px", padding: "10px", backgroundColor: "#f5f5f5", borderRadius: "5px" }}>
+                <p><strong>Conversiones en tiempo real:</strong></p>
+                <p>Precio en USD: <strong>${usdPrice.toFixed(2)}</strong></p>
+                <p>Precio en ETH: <strong>{ethPrice.toFixed(6)} ETH</strong></p>
+                <p>Precio en Soles: <strong>S/ {penPrice.toFixed(2)}</strong></p>
               </div>
               <Input
                 label="Cantidad"

@@ -43,13 +43,12 @@ const NftItem: React.FC<NftItemProps> = ({
       </div>
       <div className={styles.priceInfo}>
         <p className={styles.price}>
-          $
-          {(price * 1000).toLocaleString("en-US", {
+          ${(price * 3000).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}
         </p>
-        <p className={styles.ethPrice}>{price.toFixed(2)}</p>
+        <p className={styles.ethPrice}>{price.toFixed(6)} ETH</p>
       </div>
     </div>
   );

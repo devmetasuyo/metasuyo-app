@@ -1,40 +1,37 @@
-"use client";
-
 import { Banner, Button, Degradado, Text, Title } from "@/components";
 import StatsCard from "./StatsCard";
-import { useEffect, useState } from "react";
 import styles from "./AdminNft.module.scss";
 import NftItem, { NftItemProps } from "./NftItem";
 import { Card, CardContent } from "@/components/common/Card";
-import { useRouter } from "next/navigation";
+import { prisma } from "@/utils/prismaClient";
+import ProductsClient from "./ProductsClient";
 
-const AdminNftPage = () => {
-  const router = useRouter();
-  const [nfts, setNfts] = useState<NftItemProps[]>([]);
+// Revalidar cada 30 segundos
+export const revalidate = 30;
 
-  useEffect(() => {
-    async function getProducts() {
-      const response = await fetch("/api/products/all");
-      const data = await response.json();
+async function getProducts(): Promise<NftItemProps[]> {
+  try {
+    const products = await prisma.productos.findMany({
+      orderBy: {
+        id: 'desc', // Ordenar por ID descendente para mostrar los más nuevos primero
+      },
+    });
+    
+    return products.map((product: any) => ({
+      id: product.id,
+      image: product.image,
+      category: product.categoria,
+      name: product.nombre,
+      price: Number(product.precio),
+    }));
+  } catch (error) {
+    console.error("[Products] Error fetching products:", error);
+    return [];
+  }
+}
 
-      if (data.products) {
-        const parsedProducts: NftItemProps[] = data.products.map(
-          (product: any) => {
-            return {
-              id: product.id,
-              image: product.image,
-              category: product.categoria,
-              name: product.nombre,
-              price: +product.precio,
-            };
-          }
-        );
-
-        setNfts(parsedProducts);
-      }
-    }
-    getProducts();
-  }, []);
+export default async function AdminNftPage() {
+  const products = await getProducts();
 
   return (
     <>
@@ -54,47 +51,7 @@ const AdminNftPage = () => {
       />
       <Degradado />
       <Title title="Administrar productos" />
-
-      <div className={styles.container}>
-        <Card
-          style={{
-            width: "100%",
-          }}
-        >
-          <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: " 0 0.5rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <Text as="h2">Productos</Text>
-              <Button
-                color="primary"
-                onClick={() => router.push("/Dashboard/products/new")}
-              >
-                Agregar
-              </Button>
-            </div>
-            <div className={styles.nftList}>
-              {nfts.map((nft) => (
-                <NftItem
-                  key={nft.id}
-                  name={nft.name}
-                  image={nft.image}
-                  price={nft.price}
-                  category={nft.category}
-                  id={nft.id}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ProductsClient initialProducts={products} />
     </>
   );
-};
-
-export default AdminNftPage;
+}

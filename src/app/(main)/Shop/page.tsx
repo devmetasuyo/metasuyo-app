@@ -7,7 +7,12 @@ import ShopClient from "./ShopClient";
 // Revalidar cada 30 segundos
 export const revalidate = 30;
 
-async function getProducts(): Promise<CartProduct[]> {
+// Tipo específico para productos del Shop con ID string
+interface ShopProduct extends Omit<CartProduct, 'id'> {
+  id: string;
+}
+
+async function getProducts(): Promise<ShopProduct[]> {
   try {
     const products = await prisma.productos.findMany({
       where: {
@@ -23,7 +28,7 @@ async function getProducts(): Promise<CartProduct[]> {
     // Convertir los productos para que sean compatibles con CartProduct
     return products.map((product: any) => ({
       ...product,
-      id: Number(product.id), // Convertir string a number
+      id: product.id, // Mantener como string para la navegación
       precio: Number(product.precio), // Convertir Decimal a number
     }));
   } catch (error) {

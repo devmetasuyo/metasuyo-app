@@ -7,12 +7,18 @@ import NftItem from "./NftItem";
 import Cart from "./Cart";
 import { Filters } from "./Filters";
 import Pagination from "./Pagination";
+import { Button } from "@/components";
 import styles from "./Ecommerce.module.scss";
 
 const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
 
+// Tipo específico para productos del Shop con ID string
+interface ShopProduct extends Omit<CartProduct, 'id'> {
+  id: string;
+}
+
 interface ShopClientProps {
-  initialProducts: CartProduct[];
+  initialProducts: ShopProduct[];
 }
 
 export default function ShopClient({ initialProducts }: ShopClientProps) {
@@ -25,7 +31,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
     checkItemsInCart,
   } = useOrder();
 
-  const [products] = useState<CartProduct[]>(initialProducts);
+  const [products] = useState<ShopProduct[]>(initialProducts);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [productsPriceRange] = useState<[number, number]>([0, 100000]);
@@ -39,7 +45,12 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
   // Efecto para verificar items en el carrito cuando cambian los productos
   useMemo(() => {
     if (order && products.length > 0) {
-      checkItemsInCart(products);
+      // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
+      const cartProducts = products.map(product => ({
+        ...product,
+        id: Number(product.id), // Convertir string a number
+      }));
+      checkItemsInCart(cartProducts);
     }
   }, [order, products, checkItemsInCart]);
 
@@ -80,6 +91,23 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
           handleRemoveItemFromCart={removeItemFromCart}
           totalPrice={totalPrice}
         />
+        {/* Botón de debug */}
+        <Button 
+          size="xs" 
+          onClick={() => {
+            console.log("Estado actual:", {
+              products: products.length,
+              currentProducts: currentProducts.length,
+              paginatedProducts: paginatedProducts.length,
+              order,
+              totalItems,
+              totalPrice
+            });
+          }}
+          style={{ marginLeft: '10px' }}
+        >
+          Debug
+        </Button>
       </div>
       <div className={styles.nftGrid}>
         {paginatedProducts.map(
@@ -95,9 +123,9 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 nombre={nombre}
                 precio={Number(precio)}
                 onBuy={() => {
-                  if (!id) return;
+                  console.log("onBuy llamado para producto:", { id, nombre, precio });
                   addItemToCart({
-                    id: id.toString(),
+                    id: id,
                     imageSrc: image,
                     name: nombre,
                     quantity: 1,

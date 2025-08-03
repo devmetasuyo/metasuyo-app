@@ -17,8 +17,9 @@ export const POST = async (request: Request) => {
         },
       });
       
-      // Revalidar la página del Shop para mostrar el nuevo producto inmediatamente
+      // Revalidar las páginas para mostrar el nuevo producto inmediatamente
       revalidatePath("/Shop");
+      revalidatePath("/Dashboard/products");
       
       return Response.json({ product: newProduct, status: "success" });
     }
@@ -37,8 +38,9 @@ export const POST = async (request: Request) => {
       },
     });
 
-    // Revalidar la página del Shop para mostrar los cambios inmediatamente
+    // Revalidar las páginas para mostrar los cambios inmediatamente
     revalidatePath("/Shop");
+    revalidatePath("/Dashboard/products");
 
     return Response.json({ product: newProduct, status: "success" });
   } catch (error) {

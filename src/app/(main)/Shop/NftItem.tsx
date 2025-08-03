@@ -8,7 +8,12 @@ import { SiEthereum } from "react-icons/si";
 import { CartProduct } from "../Dashboard/pos/page";
 import { PiCurrencyDollar, PiCurrencyEthFill } from "react-icons/pi";
 
-interface NftItemProps extends CartProduct {
+// Tipo específico para productos del Shop con ID string
+interface ShopProduct extends Omit<CartProduct, 'id'> {
+  id: string;
+}
+
+interface NftItemProps extends ShopProduct {
   onBuy: () => void;
 }
 
@@ -32,19 +37,25 @@ const NftItem: React.FC<NftItemProps> = ({
 
   return (
     <div className={`${styles.nftItem}`}>
-             <img 
-         src={image} 
-         alt={nombre} 
-         className={styles.nftImage}
-         onClick={() => id && router.push(`/Shop/${id}`)}
-         style={{ cursor: 'pointer' }}
-       />
-       <div className={styles.nftDetails}>
-         <h3 
-           className={styles.nftName}
-           onClick={() => id && router.push(`/Shop/${id}`)}
-           style={{ cursor: 'pointer' }}
-         >
+      <img 
+        src={image} 
+        alt={nombre} 
+        className={styles.nftImage}
+        onClick={() => {
+          console.log("Click en imagen, id:", id);
+          router.push(`/Shop/${id}`);
+        }}
+        style={{ cursor: 'pointer' }}
+      />
+      <div className={styles.nftDetails}>
+        <h3 
+          className={styles.nftName}
+          onClick={() => {
+            console.log("Click en título, id:", id);
+            router.push(`/Shop/${id}`);
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           {nombre}
         </h3>
         <Text>{categoria}</Text>
@@ -80,7 +91,15 @@ const NftItem: React.FC<NftItemProps> = ({
               <PiCurrencyEthFill size={16} /> {precio}
             </span>
           </p>
-          <Button className={styles.buyButton} size="xs" onClick={onBuy}>
+          <Button 
+            className={styles.buyButton} 
+            size="xs" 
+            onClick={(e) => {
+              e.stopPropagation(); // Evitar que se propague el click
+              console.log("Click en comprar, id:", id);
+              onBuy();
+            }}
+          >
             Comprar
           </Button>
         </div>
