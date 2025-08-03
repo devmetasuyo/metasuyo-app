@@ -1,70 +1,39 @@
-"use client";
-
 import { Banner, Degradado } from "@/components";
 import textos from "@/utils/text.json";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import styles from "./Ecommerce.module.scss";
-import NftItem from "./NftItem";
-import Pagination from "./Pagination";
-
-import useOrder from "@/hooks/useOrder";
-import Cart from "./Cart";
-import { Filters } from "./Filters";
+import { prisma } from "@/utils/prismaClient";
 import { CartProduct } from "../Dashboard/pos/page";
+import ShopClient from "./ShopClient";
 
-const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
+// Revalidar cada 30 segundos
+export const revalidate = 30;
 
-function EcommercePage() {
-  const {
-    addItemToCart,
-    order,
-    removeItemFromCart,
-    totalPrice,
-    totalItems,
-    checkItemsInCart,
-  } = useOrder();
-
-  const [products, setProducts] = useState<CartProduct[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const [productsPriceRange] = useState<
-    [number, number]
-  >([0, 100000]);
-
-  const [filters, setFilters] = useState<{ price: [number, number] }>({
-    price: [0, 100000],
-  });
-
-  const itemsPerPage = 5;
-
-  const getAllProducts = useCallback(async () => {
-    const response = await fetch("/api/products/all");
-    const data = await response.json();
-    if (data) {
-      setProducts(data.products);
-    }
-  }, [products]);
-
-  useEffect(() => {
-    if (order && products.length > 0) checkItemsInCart(products);
-  }, [products, order]);
-
-  useEffect(() => {
-    getAllProducts();
-  }, []);
-
-  const currentProducts = useMemo(() => {
-    return products.filter((product) => {
-      if (
-        +product.precio >= filters.price[0] &&
-        +product.precio <= filters.price[1]
-      )
-        return true;
+async function getProducts(): Promise<CartProduct[]> {
+  try {
+    const products = await prisma.productos.findMany({
+      where: {
+        cantidad: {
+          gt: 0, // Solo productos con stock disponible
+        },
+      },
+      orderBy: {
+        id: 'desc', // Ordenar por ID descendente para mostrar los más nuevos primero
+      },
     });
-  }, [products, filters]);
+    
+    // Convertir los productos para que sean compatibles con CartProduct
+    return products.map((product: any) => ({
+      ...product,
+      id: Number(product.id), // Convertir string a number
+      precio: Number(product.precio), // Convertir Decimal a number
+    }));
+  } catch (error) {
+    console.error("[Shop] Error fetching products:", error);
+    return [];
+  }
+}
 
-  const totalPages = Math.ceil(currentProducts.length / itemsPerPage);
+export default async function EcommercePage() {
+  const products = await getProducts();
 
   return (
     <>
@@ -83,60 +52,7 @@ function EcommercePage() {
         }}
       />
       <Degradado />
-      <div className={styles.container}>
-        <div className={styles.filterContainer}>
-          <Filters
-            values={{
-              priceMin: productsPriceRange[0],
-              priceMax: productsPriceRange[1],
-            }}
-            onFilterChange={(filtersIn) => {
-              setFilters({ price: filtersIn.price ?? filters.price });
-            }}
-          />
-          <Cart
-            to={adminWallet}
-            totalItems={totalItems}
-            order={order}
-            handleRemoveItemFromCart={removeItemFromCart}
-            totalPrice={totalPrice}
-          />
-        </div>
-        <div className={styles.nftGrid}>
-          {currentProducts.map(
-            ({ precio, categoria, id, image, nombre, descripcion, cantidad }) =>
-              cantidad > 0 && (
-                <NftItem
-                  key={id}
-                  id={id}
-                  cantidad={cantidad}
-                  categoria={categoria}
-                  descripcion={descripcion}
-                  image={image}
-                  nombre={nombre}
-                  precio={Number(precio)}
-                  onBuy={() => {
-                    if (!id) return;
-                    addItemToCart({
-                      id: id.toString(),
-                      imageSrc: image,
-                      name: nombre,
-                      quantity: 1,
-                      price: Number(precio),
-                    });
-                  }}
-                />
-              )
-          )}
-        </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      <ShopClient initialProducts={products} />
     </>
   );
 }
-
-export default EcommercePage;

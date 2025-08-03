@@ -20,13 +20,12 @@ export async function POST(request: NextRequest) {
       .webp()
       .toBuffer();
 
-    const response = new NextResponse(imagenProcesada);
-
-    response.headers.set("Content-Type", "image/webp");
-    response.headers.set(
-      "Content-Disposition",
-      'attachment; filename="imagen_procesada.webp"'
-    );
+    const response = new NextResponse(new Uint8Array(imagenProcesada), {
+      headers: {
+        "Content-Type": "image/webp",
+        "Content-Disposition": 'attachment; filename="imagen_procesada.webp"'
+      }
+    });
 
     return response;
   } catch (error) {

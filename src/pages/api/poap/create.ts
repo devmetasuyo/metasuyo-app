@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Adjuntar la imagen
     if (imageFile && imageFile.filepath) {
       const buffer = await fs.promises.readFile(imageFile.filepath);
-      const blob = new Blob([buffer], { type: imageFile.mimetype });
+      const blob = new Blob([new Uint8Array(buffer)], { type: imageFile.mimetype });
       formData.append(
         "image",
         blob,

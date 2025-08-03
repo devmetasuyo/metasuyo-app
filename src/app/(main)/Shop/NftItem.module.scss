@@ -25,6 +25,12 @@
   max-height: 150px;
   object-fit: contain;
   border-radius: 4px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .nftName {
@@ -33,6 +39,11 @@
   font-size: 1rem;
   margin: 10px 0;
   text-align: left;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $primary-color;
+  }
 }
 
 .nftPrice {

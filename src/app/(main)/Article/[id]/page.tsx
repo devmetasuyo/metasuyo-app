@@ -1,11 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  Degradado,
-  Banner,
-  CardNft,
-  Title,
-} from "@/components";
+import { Degradado, Banner, CardNft, Title } from "@/components";
 import { CarouselMainWallet } from "@/components";
 import textos from "@/utils/text.json";
 import { useFeedbackModal } from "@/components/Modals/FeedbackModal";
@@ -19,7 +14,8 @@ export default function Article({ params }: { params: { id: string } }) {
     if (!session?.wallet) {
       openModal({
         title: "Iniciar sesión requerido",
-        message: "Por favor, inicia sesión con Privy para poder cobrar tu premio.",
+        message:
+          "Por favor, inicia sesión con Privy para poder cobrar tu premio.",
         type: "warning",
         confirmButton: "Iniciar sesión",
         onConfirm: login,
@@ -45,7 +41,6 @@ export default function Article({ params }: { params: { id: string } }) {
       <CardNft id={+params.id} />
       <Title title="Collections" />
       <CarouselMainWallet />
-
     </div>
   );
 }

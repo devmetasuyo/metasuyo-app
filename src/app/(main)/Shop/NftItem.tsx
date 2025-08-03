@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./NftItem.module.scss";
 import { Button, Text } from "@/components";
 import { SiEthereum } from "react-icons/si";
@@ -19,6 +20,7 @@ const NftItem: React.FC<NftItemProps> = ({
   nombre,
   onBuy,
 }) => {
+  const router = useRouter();
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
@@ -30,9 +32,21 @@ const NftItem: React.FC<NftItemProps> = ({
 
   return (
     <div className={`${styles.nftItem}`}>
-      <img src={image} alt={nombre} className={styles.nftImage} />
-      <div className={styles.nftDetails}>
-        <h3 className={styles.nftName}>{nombre}</h3>
+             <img 
+         src={image} 
+         alt={nombre} 
+         className={styles.nftImage}
+         onClick={() => id && router.push(`/Shop/${id}`)}
+         style={{ cursor: 'pointer' }}
+       />
+       <div className={styles.nftDetails}>
+         <h3 
+           className={styles.nftName}
+           onClick={() => id && router.push(`/Shop/${id}`)}
+           style={{ cursor: 'pointer' }}
+         >
+          {nombre}
+        </h3>
         <Text>{categoria}</Text>
         <div className={styles.nftPriceContainer}>
           <p className={styles.nftPrice}>
