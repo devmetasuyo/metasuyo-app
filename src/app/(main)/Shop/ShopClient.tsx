@@ -55,11 +55,10 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {
-      if (
+      return (
         +product.precio >= filters.price[0] &&
         +product.precio <= filters.price[1]
-      )
-        return true;
+      );
     });
   }, [products, filters]);
 

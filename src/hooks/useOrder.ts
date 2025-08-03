@@ -78,7 +78,7 @@ export const useOrder = () => {
 
   const checkItemsInCart = useCallback(
     async (CartProducts: CartProduct[]) => {
-      if (order) {
+      if (order && CartProducts.length > 0) {
         const updatedOrder = { ...order };
         const cartItems = Object.values(order.cart);
 
