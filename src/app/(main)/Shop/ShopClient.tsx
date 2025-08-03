@@ -7,6 +7,7 @@ import NftItem from "./NftItem";
 import Cart from "./Cart";
 import { Filters } from "./Filters";
 import Pagination from "./Pagination";
+import { Button } from "@/components";
 import styles from "./Ecommerce.module.scss";
 
 const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
@@ -38,10 +39,11 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   // Efecto para verificar items en el carrito cuando cambian los productos
   useEffect(() => {
-    if (order && products.length > 0) {
+    if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
+      console.log("🔍 Verificando items en carrito...");
       checkItemsInCart(products);
     }
-  }, [products, order, checkItemsInCart]);
+  }, [products, order?.cart, checkItemsInCart]);
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {
@@ -79,6 +81,21 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
           handleRemoveItemFromCart={removeItemFromCart}
           totalPrice={totalPrice}
         />
+        <Button 
+          onClick={() => {
+            console.log("🧪 Test: Agregando producto de prueba");
+            addItemToCart({
+              id: "test-123",
+              imageSrc: "/test-image.jpg",
+              name: "Producto de Prueba",
+              quantity: 1,
+              price: 100,
+            });
+          }}
+          style={{ marginLeft: "10px" }}
+        >
+          Test Add
+        </Button>
       </div>
       <div className={styles.nftGrid}>
         {paginatedProducts.map(
@@ -94,14 +111,20 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 nombre={nombre}
                 precio={Number(precio)}
                 onBuy={() => {
-                  if (!id) return;
-                  addItemToCart({
+                  console.log("🛒 onBuy ejecutado para producto:", { id, nombre, precio, image });
+                  if (!id) {
+                    console.log("❌ ID no válido:", id);
+                    return;
+                  }
+                  const cartItem = {
                     id: id.toString(),
                     imageSrc: image,
                     name: nombre,
                     quantity: 1,
                     price: Number(precio),
-                  });
+                  };
+                  console.log("📦 Item a agregar al carrito:", cartItem);
+                  addItemToCart(cartItem);
                 }}
               />
             )
