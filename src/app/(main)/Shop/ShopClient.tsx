@@ -106,7 +106,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 onBuy={() => {
                   console.log("onBuy llamado para producto:", { id, nombre, precio });
                   addItemToCart({
-                    id: id,
+                    id: id.toString(),
                     imageSrc: image,
                     name: nombre,
                     quantity: 1,
