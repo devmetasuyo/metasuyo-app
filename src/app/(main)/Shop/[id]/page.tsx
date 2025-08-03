@@ -10,7 +10,7 @@ async function getProduct(id: string) {
   try {
     const product = await prisma.productos.findUnique({
       where: {
-        id: id,
+        id: id, // El ID en la base de datos es un UUID string
       },
     });
     

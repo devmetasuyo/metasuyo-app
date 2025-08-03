@@ -41,36 +41,29 @@ export const useOrder = () => {
   };
 
   const updateOrder = (order: Order) => {
-    console.log("🔄 updateOrder llamado con:", order);
     localStorage.setItem("order", JSON.stringify(order));
     const totalItems = calculateTotalItems(order);
     const totalPrice = calculateTotalPrice(order);
-    console.log("🔄 Calculando totales - items:", totalItems, "precio:", totalPrice);
     setTotalItems(totalItems);
     setTotalPrice(totalPrice);
     setOrder(order);
-    console.log("✅ Estado actualizado");
   };
 
   const addItemToCart = (item: CartItem) => {
-    console.log("🛒 addItemToCart llamado con:", item);
-    console.log("🛒 Estado actual del order:", order);
+    console.log("🛒 Agregando al carrito:", item.name);
     
     const updatedOrder = order ? { ...order } : { id: uuidv4(), cart: {} };
-    console.log("🛒 Order a actualizar:", updatedOrder);
     
     if (updatedOrder.cart[item.id]) {
       updatedOrder.cart[item.id].quantity += 1;
-      console.log("✅ Producto existente, cantidad incrementada");
+      console.log("✅ Cantidad incrementada");
     } else {
       item.price = Number(item.price);
       updatedOrder.cart[item.id] = item;
-      console.log("✅ Nuevo producto agregado al carrito");
+      console.log("✅ Producto agregado");
     }
     
-    console.log("🛒 Carrito antes de updateOrder:", updatedOrder.cart);
     updateOrder(updatedOrder);
-    console.log("✅ Carrito actualizado:", updatedOrder);
   };
 
   const removeItemFromCart = (item: CartItem) => {

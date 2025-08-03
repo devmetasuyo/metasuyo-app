@@ -7,13 +7,17 @@ import NftItem from "./NftItem";
 import Cart from "./Cart";
 import { Filters } from "./Filters";
 import Pagination from "./Pagination";
-import { Button } from "@/components";
 import styles from "./Ecommerce.module.scss";
 
 const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
 
+// Tipo específico para productos del Shop con ID string (UUID)
+interface ShopProduct extends Omit<CartProduct, 'id'> {
+  id: string;
+}
+
 interface ShopClientProps {
-  initialProducts: CartProduct[];
+  initialProducts: ShopProduct[];
 }
 
 export default function ShopClient({ initialProducts }: ShopClientProps) {
@@ -26,7 +30,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
     checkItemsInCart,
   } = useOrder();
 
-  const [products] = useState<CartProduct[]>(initialProducts);
+  const [products] = useState<ShopProduct[]>(initialProducts);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [productsPriceRange] = useState<[number, number]>([0, 100000]);
@@ -37,13 +41,17 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   const itemsPerPage = 5;
 
-  // Efecto para verificar items en el carrito cuando cambian los productos
+  // Efecto para verificar items en el carrito solo cuando cambian los productos (no cuando cambia el carrito)
   useEffect(() => {
     if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
-      console.log("🔍 Verificando items en carrito...");
-      checkItemsInCart(products);
+      // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
+      const cartProducts = products.map(product => ({
+        ...product,
+        id: parseInt(product.id.slice(-8), 16) || 1, // Convertir parte del UUID a number
+      }));
+      checkItemsInCart(cartProducts);
     }
-  }, [products, order?.cart, checkItemsInCart]);
+  }, [products, checkItemsInCart]); // Removido order?.cart para evitar ejecución al agregar items
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {
@@ -81,21 +89,6 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
           handleRemoveItemFromCart={removeItemFromCart}
           totalPrice={totalPrice}
         />
-        <Button 
-          onClick={() => {
-            console.log("🧪 Test: Agregando producto de prueba");
-            addItemToCart({
-              id: "test-123",
-              imageSrc: "/test-image.jpg",
-              name: "Producto de Prueba",
-              quantity: 1,
-              price: 100,
-            });
-          }}
-          style={{ marginLeft: "10px" }}
-        >
-          Test Add
-        </Button>
       </div>
       <div className={styles.nftGrid}>
         {paginatedProducts.map(
@@ -111,20 +104,14 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 nombre={nombre}
                 precio={Number(precio)}
                 onBuy={() => {
-                  console.log("🛒 onBuy ejecutado para producto:", { id, nombre, precio, image });
-                  if (!id) {
-                    console.log("❌ ID no válido:", id);
-                    return;
-                  }
-                  const cartItem = {
-                    id: id.toString(),
+                  if (!id) return;
+                  addItemToCart({
+                    id: id, // ID ya es string (UUID)
                     imageSrc: image,
                     name: nombre,
                     quantity: 1,
                     price: Number(precio),
-                  };
-                  console.log("📦 Item a agregar al carrito:", cartItem);
-                  addItemToCart(cartItem);
+                  });
                 }}
               />
             )
