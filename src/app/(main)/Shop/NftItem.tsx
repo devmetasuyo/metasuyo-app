@@ -8,12 +8,7 @@ import { SiEthereum } from "react-icons/si";
 import { CartProduct } from "../Dashboard/pos/page";
 import { PiCurrencyDollar, PiCurrencyEthFill } from "react-icons/pi";
 
-// Tipo específico para productos del Shop con ID string
-interface ShopProduct extends Omit<CartProduct, 'id'> {
-  id: string;
-}
-
-interface NftItemProps extends ShopProduct {
+interface NftItemProps extends CartProduct {
   onBuy: () => void;
 }
 
@@ -43,7 +38,9 @@ const NftItem: React.FC<NftItemProps> = ({
         className={styles.nftImage}
         onClick={() => {
           console.log("Click en imagen, id:", id);
-          router.push(`/Shop/${id}`);
+          if (id !== undefined && id !== null) {
+            router.push(`/Shop/${id.toString()}`);
+          }
         }}
         style={{ cursor: 'pointer' }}
       />
@@ -52,7 +49,9 @@ const NftItem: React.FC<NftItemProps> = ({
           className={styles.nftName}
           onClick={() => {
             console.log("Click en título, id:", id);
-            router.push(`/Shop/${id}`);
+            if (id !== undefined && id !== null) {
+              router.push(`/Shop/${id.toString()}`);
+            }
           }}
           style={{ cursor: 'pointer' }}
         >

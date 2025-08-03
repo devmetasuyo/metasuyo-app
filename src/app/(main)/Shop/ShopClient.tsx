@@ -11,13 +11,8 @@ import styles from "./Ecommerce.module.scss";
 
 const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
 
-// Tipo específico para productos del Shop con ID string
-interface ShopProduct extends Omit<CartProduct, 'id'> {
-  id: string;
-}
-
 interface ShopClientProps {
-  initialProducts: ShopProduct[];
+  initialProducts: CartProduct[];
 }
 
 export default function ShopClient({ initialProducts }: ShopClientProps) {
@@ -30,7 +25,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
     checkItemsInCart,
   } = useOrder();
 
-  const [products] = useState<ShopProduct[]>(initialProducts);
+  const [products] = useState<CartProduct[]>(initialProducts);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [productsPriceRange] = useState<[number, number]>([0, 100000]);
@@ -43,15 +38,10 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   // Efecto para verificar items en el carrito cuando cambian los productos
   useEffect(() => {
-    if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
-      // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
-      const cartProducts = products.map(product => ({
-        ...product,
-        id: Number(product.id), // Convertir string a number
-      }));
-      checkItemsInCart(cartProducts);
+    if (order && products.length > 0) {
+      checkItemsInCart(products);
     }
-  }, [order?.cart, products, checkItemsInCart]);
+  }, [products, order, checkItemsInCart]);
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {
@@ -104,7 +94,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 nombre={nombre}
                 precio={Number(precio)}
                 onBuy={() => {
-                  console.log("onBuy llamado para producto:", { id, nombre, precio });
+                  if (!id) return;
                   addItemToCart({
                     id: id.toString(),
                     imageSrc: image,
