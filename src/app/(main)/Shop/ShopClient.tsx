@@ -41,25 +41,25 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   const itemsPerPage = 5;
 
-  // Efecto para verificar items en el carrito solo cuando cambian los productos (no cuando cambia el carrito)
-  useEffect(() => {
-    console.log("🔍 useEffect - checkItemsInCart ejecutándose");
-    console.log("🔍 Order:", order);
-    console.log("🔍 Products length:", products.length);
-    console.log("🔍 Cart length:", order ? Object.keys(order.cart).length : 0);
+  // TEMPORALMENTE DESHABILITADO - Efecto para verificar items en el carrito 
+  // useEffect(() => {
+  //   console.log("🔍 useEffect - checkItemsInCart ejecutándose");
+  //   console.log("🔍 Order:", order);
+  //   console.log("🔍 Products length:", products.length);
+  //   console.log("🔍 Cart length:", order ? Object.keys(order.cart).length : 0);
     
-    if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
-      console.log("🔍 Ejecutando checkItemsInCart...");
-      // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
-      const cartProducts = products.map(product => ({
-        ...product,
-        id: parseInt(product.id.slice(-8), 16) || 1, // Convertir parte del UUID a number
-      }));
-      checkItemsInCart(cartProducts);
-    } else {
-      console.log("🔍 Condiciones no cumplidas, no ejecutando checkItemsInCart");
-    }
-  }, [products, checkItemsInCart]); // Removido order?.cart para evitar ejecución al agregar items
+  //   if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
+  //     console.log("🔍 Ejecutando checkItemsInCart...");
+  //     // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
+  //     const cartProducts = products.map(product => ({
+  //       ...product,
+  //       id: parseInt(product.id.slice(-8), 16) || 1, // Convertir parte del UUID a number
+  //     }));
+  //     checkItemsInCart(cartProducts);
+  //   } else {
+  //     console.log("🔍 Condiciones no cumplidas, no ejecutando checkItemsInCart");
+  //   }
+  // }, [products, checkItemsInCart]); // Removido order?.cart para evitar ejecución al agregar items
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {
