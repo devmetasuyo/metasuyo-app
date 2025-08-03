@@ -60,7 +60,7 @@ function EcommercePage() {
         +product.precio >= filters.price[0] &&
         +product.precio <= filters.price[1]
       )
-        return products;
+        return true;
     });
   }, [products, filters]);
 

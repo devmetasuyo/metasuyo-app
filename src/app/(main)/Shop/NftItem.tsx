@@ -45,7 +45,12 @@ const NftItem: React.FC<NftItemProps> = ({
                 marginRight: "2rem",
               }}
             >
-              <PiCurrencyEthFill size={16} /> {precio}
+              <PiCurrencyDollar size={16} />{" "}
+              {Intl.NumberFormat("es-ES", {
+                maximumSignificantDigits: 2,
+                maximumFractionDigits: 2,
+                roundingPriority: "morePrecision",
+              }).format(precio * price)}
             </span>
           </p>
           <p className={styles.nftPrice}>
@@ -58,12 +63,7 @@ const NftItem: React.FC<NftItemProps> = ({
                 marginRight: "2rem",
               }}
             >
-              <PiCurrencyDollar size={16} />{" "}
-              {Intl.NumberFormat("es-ES", {
-                maximumSignificantDigits: 2,
-                maximumFractionDigits: 2,
-                roundingPriority: "morePrecision",
-              }).format(precio * price)}
+              <PiCurrencyEthFill size={16} /> {precio}
             </span>
           </p>
           <Button className={styles.buyButton} size="xs" onClick={onBuy}>
