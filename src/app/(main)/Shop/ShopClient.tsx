@@ -43,13 +43,21 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
   // Efecto para verificar items en el carrito solo cuando cambian los productos (no cuando cambia el carrito)
   useEffect(() => {
+    console.log("🔍 useEffect - checkItemsInCart ejecutándose");
+    console.log("🔍 Order:", order);
+    console.log("🔍 Products length:", products.length);
+    console.log("🔍 Cart length:", order ? Object.keys(order.cart).length : 0);
+    
     if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
+      console.log("🔍 Ejecutando checkItemsInCart...");
       // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
       const cartProducts = products.map(product => ({
         ...product,
         id: parseInt(product.id.slice(-8), 16) || 1, // Convertir parte del UUID a number
       }));
       checkItemsInCart(cartProducts);
+    } else {
+      console.log("🔍 Condiciones no cumplidas, no ejecutando checkItemsInCart");
     }
   }, [products, checkItemsInCart]); // Removido order?.cart para evitar ejecución al agregar items
 
@@ -104,14 +112,20 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                 nombre={nombre}
                 precio={Number(precio)}
                 onBuy={() => {
+                  console.log("🛒 Botón Comprar presionado para:", nombre);
+                  console.log("🛒 ID del producto:", id);
+                  console.log("🛒 Estado actual del carrito - totalItems:", totalItems);
                   if (!id) return;
-                  addItemToCart({
+                  const itemToAdd = {
                     id: id, // ID ya es string (UUID)
                     imageSrc: image,
                     name: nombre,
                     quantity: 1,
                     price: Number(precio),
-                  });
+                  };
+                  console.log("🛒 Item a agregar:", itemToAdd);
+                  addItemToCart(itemToAdd);
+                  console.log("🛒 addItemToCart ejecutado");
                 }}
               />
             )

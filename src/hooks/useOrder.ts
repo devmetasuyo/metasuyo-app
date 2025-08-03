@@ -41,29 +41,42 @@ export const useOrder = () => {
   };
 
   const updateOrder = (order: Order) => {
+    console.log("🔄 updateOrder - Inicio");
+    console.log("🔄 Order a guardar:", order);
+    
     localStorage.setItem("order", JSON.stringify(order));
+    console.log("✅ Guardado en localStorage");
+    
     const totalItems = calculateTotalItems(order);
     const totalPrice = calculateTotalPrice(order);
+    console.log("🔄 Totales calculados - Items:", totalItems, "Precio:", totalPrice);
+    
     setTotalItems(totalItems);
     setTotalPrice(totalPrice);
     setOrder(order);
+    console.log("✅ Estados actualizados");
   };
 
   const addItemToCart = (item: CartItem) => {
-    console.log("🛒 Agregando al carrito:", item.name);
+    console.log("🛒 addItemToCart - Inicio");
+    console.log("🛒 Item recibido:", item);
+    console.log("🛒 Order actual:", order);
     
     const updatedOrder = order ? { ...order } : { id: uuidv4(), cart: {} };
+    console.log("🛒 Order que se va a actualizar:", updatedOrder);
     
     if (updatedOrder.cart[item.id]) {
       updatedOrder.cart[item.id].quantity += 1;
-      console.log("✅ Cantidad incrementada");
+      console.log("✅ Producto existente, cantidad incrementada a:", updatedOrder.cart[item.id].quantity);
     } else {
       item.price = Number(item.price);
       updatedOrder.cart[item.id] = item;
-      console.log("✅ Producto agregado");
+      console.log("✅ Nuevo producto agregado. Carrito ahora tiene:", Object.keys(updatedOrder.cart).length, "items");
     }
     
+    console.log("🛒 Carrito completo antes de updateOrder:", updatedOrder.cart);
     updateOrder(updatedOrder);
+    console.log("🛒 updateOrder ejecutado");
   };
 
   const removeItemFromCart = (item: CartItem) => {
