@@ -7,7 +7,6 @@ import NftItem from "./NftItem";
 import Cart from "./Cart";
 import { Filters } from "./Filters";
 import Pagination from "./Pagination";
-import { Button } from "@/components";
 import styles from "./Ecommerce.module.scss";
 
 const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET as `0x${string}`;
@@ -91,23 +90,6 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
           handleRemoveItemFromCart={removeItemFromCart}
           totalPrice={totalPrice}
         />
-        {/* Botón de debug */}
-        <Button 
-          size="xs" 
-          onClick={() => {
-            console.log("Estado actual:", {
-              products: products.length,
-              currentProducts: currentProducts.length,
-              paginatedProducts: paginatedProducts.length,
-              order,
-              totalItems,
-              totalPrice
-            });
-          }}
-          style={{ marginLeft: '10px' }}
-        >
-          Debug
-        </Button>
       </div>
       <div className={styles.nftGrid}>
         {paginatedProducts.map(
