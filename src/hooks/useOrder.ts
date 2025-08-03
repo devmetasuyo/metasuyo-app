@@ -108,7 +108,7 @@ export const useOrder = () => {
           }
         }
 
-        updateOrder(order);
+        updateOrder(updatedOrder);
       }
     },
     [order]

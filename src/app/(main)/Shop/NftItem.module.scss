@@ -48,10 +48,16 @@
 
 .nftPrice {
   font-size: 0.9rem;
-  color: $primary-color;
+  color: $dark-text-color;
   margin: 10px 0;
   display: flex;
   align-items: center;
+  font-weight: 600;
+  
+  span {
+    color: $primary-color;
+    font-weight: bold;
+  }
 }
 
 .duplicateTag {

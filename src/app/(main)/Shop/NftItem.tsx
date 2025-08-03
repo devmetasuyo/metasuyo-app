@@ -60,37 +60,40 @@ const NftItem: React.FC<NftItemProps> = ({
         </h3>
         <Text>{categoria}</Text>
         <div className={styles.nftPriceContainer}>
-          <p className={styles.nftPrice}>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-                gap: "0.25rem",
-                marginRight: "2rem",
-              }}
-            >
-              <PiCurrencyDollar size={16} />{" "}
-              {Intl.NumberFormat("es-ES", {
-                maximumSignificantDigits: 2,
-                maximumFractionDigits: 2,
-                roundingPriority: "morePrecision",
-              }).format(precio * price)}
-            </span>
-          </p>
-          <p className={styles.nftPrice}>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-                gap: "0.25rem",
-                marginRight: "2rem",
-              }}
-            >
-              <PiCurrencyEthFill size={16} /> {precio}
-            </span>
-          </p>
+           <p className={styles.nftPrice}>
+             <span
+               style={{
+                 display: "flex",
+                 alignItems: "center",
+                 justifyContent: "end",
+                 gap: "0.25rem",
+                 marginRight: "2rem",
+               }}
+             >
+               <PiCurrencyDollar size={16} />
+               <span>
+                 {Intl.NumberFormat("es-ES", {
+                   maximumSignificantDigits: 2,
+                   maximumFractionDigits: 2,
+                   roundingPriority: "morePrecision",
+                 }).format(precio * price)}
+               </span>
+             </span>
+           </p>
+           <p className={styles.nftPrice}>
+             <span
+               style={{
+                 display: "flex",
+                 alignItems: "center",
+                 justifyContent: "end",
+                 gap: "0.25rem",
+                 marginRight: "2rem",
+               }}
+             >
+               <PiCurrencyEthFill size={16} />
+               <span>{precio}</span>
+             </span>
+           </p>
           <Button 
             className={styles.buyButton} 
             size="xs" 
