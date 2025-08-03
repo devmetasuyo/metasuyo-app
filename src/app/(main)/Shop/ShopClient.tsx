@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { CartProduct } from "../Dashboard/pos/page";
 import useOrder from "@/hooks/useOrder";
 import NftItem from "./NftItem";
@@ -42,8 +42,8 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
   const itemsPerPage = 5;
 
   // Efecto para verificar items en el carrito cuando cambian los productos
-  useMemo(() => {
-    if (order && products.length > 0) {
+  useEffect(() => {
+    if (order && products.length > 0 && Object.keys(order.cart).length > 0) {
       // Convertir ShopProduct[] a CartProduct[] para checkItemsInCart
       const cartProducts = products.map(product => ({
         ...product,
@@ -51,7 +51,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
       }));
       checkItemsInCart(cartProducts);
     }
-  }, [order, products, checkItemsInCart]);
+  }, [order?.cart, products, checkItemsInCart]);
 
   const currentProducts = useMemo(() => {
     return products.filter((product) => {

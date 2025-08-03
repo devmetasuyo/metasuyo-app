@@ -111,7 +111,7 @@ export const useOrder = () => {
         updateOrder(updatedOrder);
       }
     },
-    [order]
+    [order, updateOrder]
   );
 
   const clearCart = () => {
