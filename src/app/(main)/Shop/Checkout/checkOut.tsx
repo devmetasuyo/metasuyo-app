@@ -92,11 +92,11 @@ export default function Component({
               <div className={styles.itemPriceContainer}>
                 <Text className={styles.itemPrice}>
                   <PiCurrencyDollar size={16} />
-                  ${item.price.toFixed(2)}
+                  ${formatUsdPrice((item.price * item.quantity) * (price || 3000))}
                 </Text>
                 <Text className={styles.itemPrice}>
                   <FaEthereum className={styles.icon} />
-                  {formatEthPrice(item.price / (price || 3000))}
+                  {formatEthPrice(item.price * item.quantity)}
                 </Text>
                 <div className={styles.quantitySelector}>
                   <Button size="xs" onClick={() => onAction(item, "decrement")}>
@@ -125,13 +125,13 @@ export default function Component({
               <Text>
                 <PiCurrencyDollar size={16} />
               </Text>
-              <Text>${totalPrice.toFixed(2)}</Text>
+              <Text>${formatUsdPrice(totalPrice * (price || 3000))}</Text>
             </div>
             <div className={styles.summaryItem}>
               <Text>
                 <FaEthereum size={16} />
               </Text>
-              <Text>{formatEthPrice(totalPrice / (price || 3000))}</Text>
+              <Text>{formatEthPrice(totalPrice)}</Text>
             </div>
             <div className={styles.summaryTotal}>
               <Text>Total</Text>
@@ -140,13 +140,13 @@ export default function Component({
               <Text>
                 <PiCurrencyDollar size={16} />
               </Text>
-              <Text>${totalPrice.toFixed(2)}</Text>
+              <Text>${formatUsdPrice(totalPrice * (price || 3000))}</Text>
             </div>
             <div className={styles.summaryItem}>
               <Text>
                 <FaEthereum size={16} />
               </Text>
-              <Text>{formatEthPrice(totalPrice / (price || 3000))}</Text>
+              <Text>{formatEthPrice(totalPrice)}</Text>
             </div>
             <Button
               size="full"
