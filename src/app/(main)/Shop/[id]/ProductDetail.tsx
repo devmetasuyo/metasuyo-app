@@ -9,8 +9,13 @@ import useOrder from "@/hooks/useOrder";
 import { CartProduct } from "../../Dashboard/pos/page";
 import styles from "./ProductDetail.module.scss";
 
+// Tipo específico para detalle de producto con ID string
+interface ProductDetailData extends Omit<CartProduct, 'id'> {
+  id: string;
+}
+
 interface ProductDetailProps {
-  product: CartProduct;
+  product: ProductDetailData;
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
@@ -49,7 +54,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     if (!product.id) return;
     
     addItemToCart({
-      id: product.id.toString(),
+      id: product.id, // ID ya es string
       imageSrc: product.image,
       name: product.nombre,
       quantity: quantity,

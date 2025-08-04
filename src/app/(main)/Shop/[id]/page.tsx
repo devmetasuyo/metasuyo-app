@@ -18,10 +18,10 @@ async function getProduct(id: string) {
       return null;
     }
 
-    // Convertir para compatibilidad con CartProduct
+    // Convertir para compatibilidad manteniendo ID como string para navegación
     return {
       ...product,
-      id: Number(product.id),
+      id: product.id, // Mantener como string para consistencia
       precio: Number(product.precio),
     };
   } catch (error) {
