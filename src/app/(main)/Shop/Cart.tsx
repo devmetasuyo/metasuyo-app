@@ -49,9 +49,16 @@ const Cart: React.FC<CartProps> = ({
     console.log("🛒 Order:", order);
     console.log("🛒 Session:", session);
     console.log("🛒 Loading:", loading);
+    console.log("🛒 TotalItems:", totalItems);
+    console.log("🛒 Cart items:", order ? Object.keys(order.cart) : "No order");
     
     if (!order) {
       alert("No hay orden para procesar");
+      return;
+    }
+    
+    if (totalItems === 0) {
+      alert("El carrito está vacío");
       return;
     }
     
@@ -63,7 +70,13 @@ const Cart: React.FC<CartProps> = ({
     }
     
     console.log("🛒 Redirigiendo a /Shop/Checkout");
-    router.push(`/Shop/Checkout`);
+    
+    // Cerrar el drawer primero
+    setIsOpen(false);
+    
+    // Usar window.location directamente para evitar problemas con router
+    console.log("🛒 Usando window.location.href");
+    window.location.href = `/Shop/Checkout`;
   };
 
   return (
