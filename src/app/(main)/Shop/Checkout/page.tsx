@@ -131,8 +131,11 @@ export default function CartPage() {
       if (data.status === "success") {
         console.log("✅ [Checkout] Perfil actualizado correctamente");
         
-        // Actualizar los datos del usuario en la sesión
-        await fetchProfileData();
+        // Actualizar los datos del perfil local inmediatamente
+        console.log("🔄 [Checkout] Actualizando datos locales del perfil...");
+        
+        // NO volver a llamar fetchProfileData que puede sobrescribir con datos viejos
+        // Los datos ya están actualizados en profileData del estado local
         
         // Cerrar el modal
         setShowProfileModal(false);
@@ -144,7 +147,16 @@ export default function CartPage() {
           message: "Tu perfil ha sido actualizado correctamente. Ahora puedes continuar con el pago.",
           confirmButton: "Continuar",
           onConfirm: () => {
-            setShowPaymentMethodModal(true);
+            // Verificar de nuevo el perfil con los datos actualizados
+            console.log("🔍 [Checkout] Re-verificando perfil actualizado:", profileData);
+            if (isProfileIncomplete()) {
+              console.log("❌ [Checkout] ERROR: Perfil sigue incompleto después de actualizar");
+              alert("Error: Los datos no se guardaron correctamente. Intenta de nuevo.");
+              setShowProfileModal(true);
+            } else {
+              console.log("✅ [Checkout] Perfil completo, continuando al pago");
+              setShowPaymentMethodModal(true);
+            }
           },
         });
       } else {
@@ -177,6 +189,7 @@ export default function CartPage() {
   // Cargar datos del perfil al montar el componente
   useEffect(() => {
     if (user?.wallet) {
+      console.log("🔄 [Checkout] useEffect - Cargando perfil inicial para wallet:", user.wallet);
       fetchProfileData();
     }
   }, [user?.wallet]);
@@ -250,15 +263,33 @@ export default function CartPage() {
 
   function isProfileIncomplete(): boolean {
     console.log("🔍 [Checkout] Verificando si el perfil está incompleto:", profileData);
-    return (
-      !profileData.nombre ||
-      !profileData.apellido ||
-      !profileData.correo ||
-      !profileData.telefono ||
-      !profileData.direccion ||
-      !profileData.tipo_documento ||
-      !profileData.documento
+    
+    // Verificar que todos los campos tengan valores válidos (no vacíos, no solo espacios)
+    const incomplete = (
+      !profileData.nombre?.trim() ||
+      !profileData.apellido?.trim() ||
+      !profileData.correo?.trim() ||
+      !profileData.telefono?.trim() ||
+      !profileData.direccion?.trim() ||
+      !profileData.tipo_documento?.trim() ||
+      !profileData.documento?.trim()
     );
+    
+    if (incomplete) {
+      console.log("❌ [Checkout] Campos faltantes:", {
+        nombre: !profileData.nombre?.trim() ? "FALTA" : "OK",
+        apellido: !profileData.apellido?.trim() ? "FALTA" : "OK",
+        correo: !profileData.correo?.trim() ? "FALTA" : "OK", 
+        telefono: !profileData.telefono?.trim() ? "FALTA" : "OK",
+        direccion: !profileData.direccion?.trim() ? "FALTA" : "OK",
+        tipo_documento: !profileData.tipo_documento?.trim() ? "FALTA" : "OK",
+        documento: !profileData.documento?.trim() ? "FALTA" : "OK"
+      });
+    } else {
+      console.log("✅ [Checkout] Perfil completo!");
+    }
+    
+    return incomplete;
   }
 
   const handleSend = async () => {
@@ -423,9 +454,28 @@ export default function CartPage() {
 
       {/* Modal para completar perfil */}
       <Modal isOpen={showProfileModal} handleModal={setShowProfileModal}>
-        <div style={{ padding: 24, maxWidth: 500 }}>
-          <h2 style={{ marginBottom: 16, textAlign: "center" }}>Completar Perfil</h2>
-          <p style={{ marginBottom: 20, textAlign: "center", color: "#666" }}>
+        <div style={{ 
+          padding: 24, 
+          maxWidth: 500, 
+          backgroundColor: "white", 
+          borderRadius: "12px",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+          margin: "auto"
+        }}>
+          <h2 style={{ 
+            marginBottom: 16, 
+            textAlign: "center",
+            color: "#333",
+            fontSize: "24px",
+            fontWeight: "600"
+          }}>Completar Perfil</h2>
+          <p style={{ 
+            marginBottom: 20, 
+            textAlign: "center", 
+            color: "#666",
+            fontSize: "14px",
+            lineHeight: "1.5"
+          }}>
             Para continuar con tu compra, necesitamos completar tu información de perfil:
           </p>
           
@@ -440,10 +490,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -458,10 +512,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -476,10 +534,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -494,10 +556,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -512,10 +578,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -528,10 +598,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               >
                 <option value="DNI">DNI</option>
@@ -549,10 +623,14 @@ export default function CartPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px",
+                  padding: "12px 16px",
                   borderRadius: "8px",
                   border: "1px solid #ddd",
-                  fontSize: "14px"
+                  fontSize: "14px",
+                  backgroundColor: "#f9f9f9",
+                  transition: "all 0.2s ease",
+                  boxSizing: "border-box",
+                  outline: "none"
                 }}
               />
             </div>
@@ -611,7 +689,30 @@ export default function CartPage() {
           <p>Escanea el QR o transfiere a:</p>
           <img src="/qr.jpg" alt="Yape QR" style={{ width: 200, margin: "0 auto" }} />
           <p>Celular: <b> 958 824 559 </b></p>
-          <p><b>Monto a pagar: S/ {(totalPrice * usdToPenRate).toFixed(2)}</b></p>
+          <p><b>Monto a pagar: S/ {((totalPrice * (Number(localStorage.getItem("price")) || 3000)) * usdToPenRate).toFixed(2)}</b></p>
+          <div style={{ 
+            backgroundColor: "#f0f8ff", 
+            padding: "12px", 
+            borderRadius: "8px", 
+            margin: "16px 0",
+            border: "1px solid #e0e7ff"
+          }}>
+            <p style={{ margin: 0, fontSize: "14px", fontWeight: "bold", color: "#1e40af" }}>
+              📋 <strong>IMPORTANTE:</strong> En el concepto del yapeo, incluye esta referencia:
+            </p>
+            <p style={{ 
+              margin: "8px 0 0 0", 
+              fontSize: "16px", 
+              fontWeight: "bold", 
+              color: "#dc2626",
+              textAlign: "center",
+              backgroundColor: "white",
+              padding: "8px",
+              borderRadius: "4px"
+            }}>
+              ORDEN: {order?.id?.slice(-8).toUpperCase() || "N/A"}
+            </p>
+          </div>
           
           <div style={{ margin: "16px 0" }}>
             <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
