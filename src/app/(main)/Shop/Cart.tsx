@@ -45,17 +45,24 @@ const Cart: React.FC<CartProps> = ({
   const router = useRouter();
 
   const handleRedirectToCheckout = async () => {
+    console.log("🛒 handleRedirectToCheckout ejecutado");
+    console.log("🛒 Order:", order);
+    console.log("🛒 Session:", session);
+    console.log("🛒 Loading:", loading);
+    
     if (!order) {
       alert("No hay orden para procesar");
       return;
     }
     
     if (!session) {
+      console.log("🛒 No hay sesión, abriendo login");
       // Abrir login de Privy si no hay sesión
       login();
       return;
     }
     
+    console.log("🛒 Redirigiendo a /Shop/Checkout");
     router.push(`/Shop/Checkout`);
   };
 
@@ -98,7 +105,7 @@ const Cart: React.FC<CartProps> = ({
                           <PiCurrencyDollar size={16} />
                           ${Intl.NumberFormat("es-ES", {
                             maximumFractionDigits: 2,
-                          }).format(item.price * item.quantity)}
+                          }).format((item.price * item.quantity) * (price || 3000))}
                         </span>
                       </Text>
                       <Text as="span">
@@ -113,7 +120,7 @@ const Cart: React.FC<CartProps> = ({
                           <PiCurrencyEthFill size={16} />
                           {Intl.NumberFormat("es-ES", {
                             maximumSignificantDigits: 6,
-                          }).format((item.price * item.quantity) / (price || 3000))}
+                          }).format(item.price * item.quantity)}
                         </span>
                       </Text>
                       <Button
@@ -146,7 +153,7 @@ const Cart: React.FC<CartProps> = ({
                   gap: "0.25rem",
                 }}
               >
-                <PiCurrencyDollar size={16} /> ${totalPrice.toFixed(2)}
+                <PiCurrencyDollar size={16} /> ${(totalPrice * (price || 3000)).toFixed(2)}
               </p>
               <p
                 style={{
@@ -159,10 +166,16 @@ const Cart: React.FC<CartProps> = ({
                 <PiCurrencyEthFill size={16} />{" "}
                 {Intl.NumberFormat("es-ES", {
                   maximumSignificantDigits: 6,
-                }).format(totalPrice / (price || 3000))}
+                }).format(totalPrice)}
               </p>
             </div>
-            <Button onClick={handleRedirectToCheckout} disabled={loading}>
+            <Button 
+              onClick={() => {
+                console.log("🛒 Botón Pagar presionado");
+                handleRedirectToCheckout();
+              }} 
+              disabled={loading}
+            >
               {!session ? "Iniciar sesión para pagar" : `Pagar (${totalItems})`}
             </Button>
           </div>
